@@ -1,25 +1,28 @@
 import logo from './logo.svg';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+
+// import Auth provider
+import { AuthProvider } from './providers/AuthProvider/AuthProvider.js';
+
+// pages
+import LandingPage from './pages/LandingPage/LandingPage';
+import FourZeroFour from './pages/404Page/FourZeroFour';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-        <h1>Hello Scool!</h1>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider> 
+      <Router>
+        <Switch>
+          <Route path="/" component={LandingPage} exact/>
+          <Route path="*" component={FourZeroFour} />
+        </Switch>
+      </Router>
+    </AuthProvider>
   );
 }
 
