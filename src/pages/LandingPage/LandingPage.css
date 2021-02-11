@@ -1,3 +1,65 @@
+/* *:focus {
+    outline: none;
+}  */
+/* This disabels focus outline for all styles... buttons, inputs, etc. */
+
+/* NOTE: Buttons are styled in LandingPage.js */
+
 body {
     background-color: #D6E7FF;
+    font-family: 'Lato', sans-serif;
+}
+
+header {
+    margin-bottom: 75px;
+    margin-left: 45px;
+    margin-right: 45px;
+    margin-top: 45px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+header .logo {
+    padding: 25px;
+}
+
+header .motto {
+    font-size: 14px;
+    padding: 25px;
+    line-height: 10px;
+}
+
+.logo {
+    border-right: 4px solid #F39237;
+}
+
+.email-password {
+    margin: 25px;
+    /* text-align: center; */
+}
+
+.email, .password {
+    margin: 15px;
+}
+
+input[type=email], input[type=password] {
+    display: block;
+    width: 19em;
+    height: 1.7em;
+    background: #EFF7FF;
+    border: 1px solid #EFF7FF;
+    border-radius: 22px;
+    padding: 1em 2em;
+    margin: 0 auto;
+}
+
+.google-login {
+    margin: 2em;
+}
+
+.error {
+    color:red;
+    text-align: center;
+    margin: 0.3em;
 }
