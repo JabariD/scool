@@ -12,6 +12,7 @@ import { AuthProvider } from './providers/AuthProvider/AuthProvider.js';
 // pages
 import LandingPage from './pages/LandingPage/LandingPage';
 import FourZeroFour from './pages/404Page/FourZeroFour';
+import SignUp from './pages/SignUpPage/SignUp';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Router>
         <Switch>
           <Route path="/" component={LandingPage} exact/>
+          <Route path="/signup" component={SignUp} exact/>
           <Route path="*" component={FourZeroFour} />
         </Switch>
       </Router>

@@ -63,3 +63,12 @@ input[type=email], input[type=password] {
     text-align: center;
     margin: 0.3em;
 }
+
+.createAccount {
+    text-align: center;
+}
+
+.create-account {
+    display: inline-block;
+    margin-top: 8px;
+}

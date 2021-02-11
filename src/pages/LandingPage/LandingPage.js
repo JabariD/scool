@@ -1,36 +1,29 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useCallback } from 'react'
 
 // import Auth context
 import { AuthContext } from '../../providers/AuthProvider/AuthProvider.js';
 
+// React Router
+import { useHistory } from 'react-router-dom';
+
 // Firebase Authentication
-import {signInWithEmailPassword} from '../../firebase/auth/signInWithEmailPassword.js';
-import {signInWithGoogle} from '../../firebase/auth/signInWithGoogle.js';
-import {signOut} from '../../firebase/auth/signOut.js';
+import { signInWithEmailPassword } from '../../firebase/auth/signInWithEmailPassword.js';
+import { signInWithGoogle } from '../../firebase/auth/signInWithGoogle.js';
+import { signOut } from '../../firebase/auth/signOut.js';
 
 // styling
 import "./LandingPage.css";
-import ScoolLogo from './img/logo.png';
+import ScoolLogo from '../img/logo.png';
 import GoogleLogo from './img/googleLogo.svg';
 
 // Material UI
+import { buttonStyle } from '../styles/MaterialUIStyles.js'
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from '@material-ui/core';
 
 
 const useStyles = makeStyles({
-    root: {
-      backgroundColor: "#2680FF",
-      border: 0,
-      borderRadius: "10px",
-      width: "155px",
-      height: "45px",
-      color: "white",
-      padding: "0 30px",
-      display: "block",
-      margin: "0 auto",
-      textTransform: "none",
-    },
+    button: buttonStyle,
     googleSignIn: {
         backgroundColor: "white",
         fontSize: "0.8em",
@@ -46,17 +39,26 @@ const useStyles = makeStyles({
   });
 
 export default function LandingPage() {
+    // Context
     const currentUser = useContext(AuthContext);
+
+    // MaterialUI
     const classes = useStyles();
 
+    // State
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
+    // History
+    const history = useHistory();
+    const handleOnClick = useCallback(() => history.push('/signup'), [history]);
+
+    // Behavior
     const emailPasswordSignIn = async(email, password) => {
-       const result = await signInWithEmailPassword(email, password);
-       if (result !== true) {
-        setErrorMessage(result);
+       const errorMessage = await signInWithEmailPassword(email, password);
+       if (errorMessage !== "") {
+        setErrorMessage("Error: " + errorMessage);
        } else {
            setEmail("");
            setPassword("");
@@ -90,10 +92,12 @@ export default function LandingPage() {
 
             <section className="error">{errorMessage}</section>
 
-            {/* Button here! LOG IN */}
-            <Button variant="contained" className={classes.root} onClick={() => emailPasswordSignIn(email, password)}>
-                Sign up
+            <Button variant="contained" className={classes.button} onClick={() => emailPasswordSignIn(email, password)}>
+                Log in
             </Button>
+            <section class="createAccount">
+                <p className="create-account" onClick={handleOnClick}>Sign up</p>
+            </section>
 
             <section className="google-login">
                 <Button variant="contained" className={classes.googleSignIn} onClick={signInWithGoogle}>
