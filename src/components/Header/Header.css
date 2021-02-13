@@ -1,0 +1,16 @@
+.hamburger-menu {
+    font-size: 1.4rem;
+    position: absolute; 
+	top: 8px; 
+	left: 6px; 
+    color: #F39237;
+}
+
+.profile-image {
+    font-size: 1.8em;
+}
+
+.header-logo {
+    float: right;
+    text-align: center;
+}

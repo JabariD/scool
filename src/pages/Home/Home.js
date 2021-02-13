@@ -19,12 +19,13 @@ export default function Home() {
 
     useEffect(() => {
         // Confirm user is logged in
-        if (currentUser === null) history.push('/');
-      });
+        console.log(currentUser)
+        // if (currentUser === null) history.push('/');
+      }, [currentUser]);
 
     return (
         <div>
-            <h1>Hello World!</h1>
+            
             <Header pageName="Home" />
 
             <SearchBar />

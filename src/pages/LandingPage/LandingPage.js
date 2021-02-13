@@ -56,7 +56,7 @@ export default function LandingPage() {
 
     useEffect(() => {
         // Confirm user is logged in
-        if (currentUser) history.push('/home');
+        // if (currentUser) history.push('/home');
       });
 
     // Behavior
@@ -123,7 +123,7 @@ export default function LandingPage() {
             <Button variant="contained" className={classes.button} onClick={() => emailPasswordSignIn(email, password)}>
                 Log in
             </Button>
-            <section class="createAccount">
+            <section className="createAccount">
                 <p className="create-account" onClick={handleOnClick}>Sign up</p>
             </section>
 
