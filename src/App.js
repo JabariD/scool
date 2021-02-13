@@ -13,6 +13,7 @@ import { AuthProvider } from './providers/AuthProvider/AuthProvider.js';
 import LandingPage from './pages/LandingPage/LandingPage';
 import FourZeroFour from './pages/404Page/FourZeroFour';
 import SignUp from './pages/SignUpPage/SignUp';
+import Home from './pages/Home/Home';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Switch>
           <Route path="/" component={LandingPage} exact/>
           <Route path="/signup" component={SignUp} exact/>
+          <Route path="/home" component={Home} exact/>
           <Route path="*" component={FourZeroFour} />
         </Switch>
       </Router>

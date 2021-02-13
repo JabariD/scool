@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from 'react'
+import React, { useContext, useState, useCallback, useEffect } from 'react'
 
 // import Auth context
 import { AuthContext } from '../../providers/AuthProvider/AuthProvider.js';
@@ -54,17 +54,45 @@ export default function LandingPage() {
     const history = useHistory();
     const handleOnClick = useCallback(() => history.push('/signup'), [history]);
 
+    useEffect(() => {
+        // Confirm user is logged in
+        if (currentUser) history.push('/home');
+      });
+
     // Behavior
     const emailPasswordSignIn = async(email, password) => {
-       const errorMessage = await signInWithEmailPassword(email, password);
-       if (errorMessage !== "") {
-        setErrorMessage("Error: " + errorMessage);
-       } else {
-           setEmail("");
-           setPassword("");
-           setErrorMessage("");
-       }
+        try {
+            const errorMessage = await signInWithEmailPassword(email, password);
+            if (errorMessage !== "") {
+                throw errorMessage;
+            } else {
+                setEmail("");
+                setPassword("");
+                setErrorMessage("");
+                history.push("/home");
+            }
+        } catch (e) {
+            console.log(e);
+            setErrorMessage(e);
+        }
     }  
+
+    const googleSignIn = async() => {
+        try {
+            const errorMessage = await signInWithGoogle();
+            if (errorMessage !== "") {
+                throw errorMessage;
+            } else {
+                setEmail("");
+                setPassword("");
+                setErrorMessage("");
+                history.push("/home");
+            }
+        } catch (e) {
+            setErrorMessage(e);
+        }
+    }
+
 
     return (
         <div>
@@ -100,7 +128,7 @@ export default function LandingPage() {
             </section>
 
             <section className="google-login">
-                <Button variant="contained" className={classes.googleSignIn} onClick={signInWithGoogle}>
+                <Button variant="contained" className={classes.googleSignIn} onClick={googleSignIn}>
                     Sign up or Log in using Google
                 </Button>
             </section>

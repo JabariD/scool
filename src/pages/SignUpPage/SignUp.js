@@ -3,6 +3,9 @@ import React, { useState } from 'react'
 // Firebase Authentication
 import { signUpWithEmailPassword } from '../../firebase/auth/signUpWithEmailPassword.js';
 
+// React Router
+import { useHistory } from 'react-router-dom';
+
 // styling
 import "./SignUp.css";
 import ScoolLogo from '../img/logo.png';
@@ -17,6 +20,8 @@ const useStyles = makeStyles({
   });
 
 export default function SignUp() {
+    const history = useHistory();
+
     // MaterialUI
     const classes = useStyles();
 
@@ -33,7 +38,7 @@ export default function SignUp() {
            setEmail("");
            setPassword("");
            setErrorMessage("");
-           console.log("User has signed up and can now log in!")
+           history.push('/home');
        }
     }
 
@@ -53,6 +58,7 @@ export default function SignUp() {
                 <Button variant="contained" className={classes.button} onClick={emailPasswordSignUp}>
                     Sign Up
                 </Button>
+                <section className="error">{errorMessage}</section>
             </section>
         </div>
     )

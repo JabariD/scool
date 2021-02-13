@@ -7,9 +7,9 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 export const signInWithGoogle = async() => {
   try {
-    const result = await auth.signInWithPopup(googleProvider);
-    console.log(result.user);
+    await auth.signInWithPopup(googleProvider);
+    return "";
   } catch (e) {
-    console.log(e.message);
+    return e.message;
   }
 }
