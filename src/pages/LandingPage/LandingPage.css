@@ -10,7 +10,7 @@ body {
     font-family: 'Lato', sans-serif;
 }
 
-header {
+.header-landingPage {
     margin-bottom: 75px;
     margin-left: 45px;
     margin-right: 45px;
@@ -20,18 +20,15 @@ header {
     justify-content: center;
 }
 
-header .logo {
+.header-landingPage .logo {
     padding: 25px;
+    border-right: 4px solid #F39237;
 }
 
-header .motto {
+.header-landingPage .motto {
     font-size: 14px;
     padding: 25px;
     line-height: 10px;
-}
-
-.logo {
-    border-right: 4px solid #F39237;
 }
 
 .email-password {

@@ -51,14 +51,16 @@ export default function Header( props ) {
 
     return (
         <header>
-            <div>
+            <div className="header-logo">
                 <span className="hamburger-menu" onClick={toggleDrawer(true)}>
-                    <i className="fas fa-bars"></i>
+                        <i className="fas fa-bars"></i>
                 </span>
-                <img src={ScoolLogo} alt="Scool logo" className="header-logo" />
-            </div>
 
-            <h2>{props.pageName}</h2>
+                <img src={ScoolLogo} alt="Scool logo"  />
+            </div>
+            
+
+            <h2 className="header-pageName">{props.pageName}</h2>
 
             <Drawer open={drawerState} onClose={toggleDrawer(false)} >
                 {drawerLinks()}

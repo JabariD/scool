@@ -11,6 +11,11 @@
 }
 
 .header-logo {
-    float: right;
+    margin-top: 25px;
+    margin-bottom: -10px;
+    text-align: center;
+}
+
+.header-pageName {
     text-align: center;
 }

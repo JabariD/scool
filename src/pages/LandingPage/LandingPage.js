@@ -96,7 +96,7 @@ export default function LandingPage() {
 
     return (
         <div>
-            <header>
+            <header className="header-landingPage">
                 <section className="logo">
                     <img src={ScoolLogo} alt="Scool Logo"/>
                     <h1 id="company logo">SCOOL</h1>
