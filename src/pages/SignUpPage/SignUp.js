@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 // Firebase Authentication
 import { signUpWithEmailPassword } from '../../firebase/auth/signUpWithEmailPassword.js';
+import { createUser } from '../../firebase/firestore/createUser.js'
+
+// import Auth context
+import { AuthContext } from '../../providers/AuthProvider/AuthProvider.js';
 
 // React Router
 import { useHistory } from 'react-router-dom';
@@ -20,6 +24,8 @@ const useStyles = makeStyles({
   });
 
 export default function SignUp() {
+    const currentUser = useContext(AuthContext);
+
     const history = useHistory();
 
     // MaterialUI
@@ -35,6 +41,7 @@ export default function SignUp() {
        if (errorMessage !== "") {
         setErrorMessage("Error: " + errorMessage);
        } else {
+           await createUser(currentUser.uid);
            setEmail("");
            setPassword("");
            setErrorMessage("");

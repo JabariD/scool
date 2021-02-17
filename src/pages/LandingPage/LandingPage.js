@@ -10,6 +10,10 @@ import { useHistory } from 'react-router-dom';
 import { signInWithEmailPassword } from '../../firebase/auth/signInWithEmailPassword.js';
 import { signInWithGoogle } from '../../firebase/auth/signInWithGoogle.js';
 import { signOut } from '../../firebase/auth/signOut.js';
+import { getUser } from '../../firebase/firestore/getUser.js'
+import { updateUser } from '../../firebase/firestore/updateUser.js'
+import { createUser } from '../../firebase/firestore/createUser.js';
+import { auth } from '../../firebase/firebase.js';
 
 // styling
 import "./LandingPage.css";
@@ -83,12 +87,26 @@ export default function LandingPage() {
             if (errorMessage !== "") {
                 throw errorMessage;
             } else {
+                let id;
+                auth.onAuthStateChanged(function(user) {
+                    if (user) {
+                      id = user.uid;
+                    } else {
+                      setErrorMessage("Please retry.");
+                    }
+                  });
+                const user = await getUser(id);
+
+                if (user.exists) await updateUser(id);
+                else await createUser(id);
+
                 setEmail("");
                 setPassword("");
                 setErrorMessage("");
                 history.push("/home");
             }
         } catch (e) {
+            console.log(e);
             setErrorMessage(e);
         }
     }

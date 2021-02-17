@@ -10,6 +10,10 @@ import { useHistory } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar/SearchBar.js';
 import Header from '../../components/Header/Header.js';
 import NavigationBar from '../../components/NavigationBar/NavigationBar.js';
+import Question from '../../components/Question/Question.js';
+
+// styles
+import './Home.css';
 
 export default function Home() {
     const history = useHistory();
@@ -19,22 +23,25 @@ export default function Home() {
 
     useEffect(() => {
         // Confirm user is logged in
-        console.log(currentUser)
-        // if (currentUser === null) history.push('/');
-      }, [currentUser]);
+        console.log(currentUser);
+        
+        //  if (currentUser === null) history.push('/');
+      }, []);
 
     return (
-        <div>
+        <div className="home">
             
             <Header pageName="Home" />
 
             <SearchBar />
 
             <main className="questions">
-
+                <Question/>
             </main>
 
-            <NavigationBar pageName="Home" />
+            {/* Choose college to subscribe too */}
+
+            <NavigationBar currentRoute="home" />
         </div>
     )
 }
