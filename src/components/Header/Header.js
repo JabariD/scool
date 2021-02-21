@@ -1,5 +1,11 @@
 import React, { useState } from 'react'
 
+// firebase
+import Authenticate from '../../firebase/auth/Authenticate.js';
+
+// React Router
+import { useHistory } from 'react-router-dom';
+
 // styles
 import "./Header.css";
 
@@ -8,9 +14,8 @@ import ScoolLogo from '../../pages/img/logo.png';
 // Material UI
 import { Drawer, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 
-
-
 export default function Header( props ) {
+    const Auth = new Authenticate();
 
     const [drawerState, setDrawerState] = useState(false);
 
@@ -22,13 +27,18 @@ export default function Header( props ) {
         setDrawerState(state);
     }
 
+    const history = useHistory();
+    const signUserOut = async() => {
+        await Auth.signOut();
+        history.push('/');
+    }
+
     const drawerLinks = () => (
         <div className="drawerLinks" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
             <section>
                 <span className="profile-image"><i className="fas fa-user-alt"></i></span>
             </section>
             
-            <Divider/>
 
             <List>
                 <ListItem>
@@ -42,6 +52,10 @@ export default function Header( props ) {
                 </ListItem>
                 <ListItem>
                     <ListItemText primary={"Settings"} />
+                </ListItem>
+                <Divider/>
+                <ListItem onClick={signUserOut}>
+                    <ListItemText primary={"Sign Out"} />
                 </ListItem>
             </List>
 

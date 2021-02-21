@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 
 // firebase
 import { firebase } from '../../firebase/firebase.js';
+import Authenticate from '../../firebase/auth/Authenticate.js';
 
 // Create context. 
 export const AuthContext = React.createContext();
@@ -13,7 +14,16 @@ export const AuthProvider = ({children}) => {
 
     // Make changes on that data.
     useEffect( () => {
-        firebase.auth().onAuthStateChanged(setCurrentUser); // subscribes to auth object listening for changes
+        firebase.auth().onAuthStateChanged( (user) => {
+            if (user) {
+                setCurrentUser(user);
+                Authenticate.user = user;
+            }
+            else {
+                setCurrentUser(null);
+                Authenticate.user = null;
+            }
+        }); // subscribes to auth object listening for changes
     }, []); // empty array passed so it runs only ONCE when AuthProvider gets mounted
 
     // NOTE: value is passed to all of it's children.

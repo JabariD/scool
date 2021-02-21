@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react'
 
 // Firebase Authentication
-import { signUpWithEmailPassword } from '../../firebase/auth/signUpWithEmailPassword.js';
-import { createUser } from '../../firebase/firestore/createUser.js'
+import Authenticate from '../../firebase/auth/Authenticate.js';
+import Firestore from '../../firebase/firestore/Firestore.js';
 
 // import Auth context
 import { AuthContext } from '../../providers/AuthProvider/AuthProvider.js';
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   });
 
 export default function SignUp() {
-    const currentUser = useContext(AuthContext);
+    const DB = new Firestore();
 
     const history = useHistory();
 
@@ -37,11 +37,13 @@ export default function SignUp() {
     const [errorMessage, setErrorMessage] = useState("");
 
     const emailPasswordSignUp = async() => {
-      const errorMessage = await signUpWithEmailPassword(email, password);
+      const errorMessage = await DB.signUpWithEmailPassword(email, password);
        if (errorMessage !== "") {
         setErrorMessage("Error: " + errorMessage);
        } else {
-           await createUser(currentUser.uid);
+           const currentUserID = Authenticate.user.uid;
+           const currentUserEmail = Authenticate.user.email;
+           await DB.createUser(currentUserID, currentUserEmail);
            setEmail("");
            setPassword("");
            setErrorMessage("");
@@ -52,7 +54,7 @@ export default function SignUp() {
     return (
         <div>
 
-            <img src={ScoolLogo} alt="Scool Logo" class="sign-up-form-logo"/>
+            <img src={ScoolLogo} alt="Scool Logo" className="sign-up-form-logo"/>
             <h1>Sign up now, free!</h1>
 
             <section className="email-password">

@@ -1,11 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
-// import Auth context
 import { AuthContext } from '../../providers/AuthProvider/AuthProvider.js';
 
 // import firebase
-import { getUser } from '../../firebase/firestore/getUser.js';
-import { queryQuestions } from '../../firebase/firestore/queryQuestions.js';
+import Authenticate from '../../firebase/auth/Authenticate.js';
+import Firestore from '../../firebase/firestore/Firestore.js';
 
 // React Router
 import { useHistory } from 'react-router-dom';
@@ -16,36 +15,72 @@ import Header from '../../components/Header/Header.js';
 import NavigationBar from '../../components/NavigationBar/NavigationBar.js';
 import Question from '../../components/Question/Question.js';
 
+// MaterialUI
+import { Select, MenuItem, Button } from '@material-ui/core';
+
 // styles
 import './Home.css';
 
 export default function Home() {
     const history = useHistory();
+    const Auth = new Authenticate();
+    const DB = new Firestore();
 
-    // Context
-    const currentUser = useContext(AuthContext);
+    // const user = useContext(AuthContext);
+    // console.log(Authenticate.user.uid);
+
+    // State
+    const [subscribeToQuestionList, setSubscribeToQuestionsList] = useState(false);
+    const [questions, setQuestions] = useState([]);
+    const [collegeSelected, setCollegeSelected] = useState("");
 
     // how to MAKE SURE user is logged in? -> use PrivateRoutes
     // assume User is logged in
 
     useEffect( async() => {
         // Confirm user is logged in
-        console.log(currentUser);
+        if (Authenticate.user === null) {
+            history.push("/");
+            return;
+        }
+        console.log(Authenticate.user);
 
         // get questions
 
         // get collection ID, if none present suggest some to user
-        const userExists = await getUser(currentUser.uid);
-        const user = userExists.data();
-        const questionID = user.questionID;
 
-        // then query questions (eventually sort by most popular in every 2 days) and display to user
-        const questionsExist = await queryQuestions(questionID);
-        questionsExist.forEach((doc) => {
-            console.log(doc.id, ' => ', doc.data());
-        });
-        //  if (currentUser === null) history.push('/');
+        const userExists = await DB.getUser(Authenticate.user.uid);
+        const userA = userExists.data();
+        const questionsID = userA.questionID;
+
+        if (questionsID === -1) {
+            setSubscribeToQuestionsList(true);
+
+        } else {
+            // then query questions (eventually sort by most popular in every 2 days) and display to user
+            const questionsExist = await DB.queryQuestions(questionsID);
+            let questionArray = [];
+            questionsExist.forEach((doc) => {
+                questionArray.push({id: doc.id, data: doc.data()})
+            });
+            setQuestions(questionArray);
+            //  if (currentUser === null) history.push('/');
+        }
+
       }, []);
+
+    const setUserUniversity = async() => {
+        if (collegeSelected === "") return;
+        else await DB.updateUser(Authenticate.user.uid, {questionID: collegeSelected});
+        
+
+        // when user confirms their choice, make it their choice in firebase
+        // grab ID from colleges and set it in user's profile
+
+        // set it to false
+        setSubscribeToQuestionsList(false);
+        setCollegeSelected("");
+    }
 
     return (
         <div className="home">
@@ -55,10 +90,28 @@ export default function Home() {
             <SearchBar />
 
             <main className="questions">
-                <Question/>
+                { (!subscribeToQuestionList) ? 
+                    questions.map( (question, index) => {
+                        return <Question key={index} question={question}/> 
+                    })
+                    : 
+                    <div>
+                        {/* Will be made into an AutoComplete for better navigation of colleges */}
+                        <h3>Choose a university to see questions...</h3>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={collegeSelected}
+                            onChange={(e) => setCollegeSelected(e.target.value)}
+                            >
+                            <MenuItem value={"huBison1867"}>Howard U</MenuItem>
+                        </Select>
+                        <Button onClick={setUserUniversity}>Submit</Button>
+                        <p>This can be changed later.</p>
+                    </div>
+                
+                }
             </main>
-
-            {/* Choose college to subscribe too */}
 
             <NavigationBar currentRoute="home" />
         </div>

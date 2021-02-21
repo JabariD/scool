@@ -2,18 +2,11 @@ import React, { useContext, useState, useCallback, useEffect } from 'react'
 
 // import Auth context
 import { AuthContext } from '../../providers/AuthProvider/AuthProvider.js';
+import Authenticate from '../../firebase/auth/Authenticate.js';
+import Firestore from '../../firebase/firestore/Firestore.js';
 
 // React Router
 import { useHistory } from 'react-router-dom';
-
-// Firebase Authentication
-import { signInWithEmailPassword } from '../../firebase/auth/signInWithEmailPassword.js';
-import { signInWithGoogle } from '../../firebase/auth/signInWithGoogle.js';
-import { signOut } from '../../firebase/auth/signOut.js';
-import { getUser } from '../../firebase/firestore/getUser.js'
-import { updateUser } from '../../firebase/firestore/updateUser.js'
-import { createUser } from '../../firebase/firestore/createUser.js';
-import { auth } from '../../firebase/firebase.js';
 
 // styling
 import "./LandingPage.css";
@@ -44,7 +37,11 @@ const useStyles = makeStyles({
 
 export default function LandingPage() {
     // Context
-    const currentUser = useContext(AuthContext);
+    // const user = useContext(AuthContext);
+    const DB = new Firestore();
+    const Auth = new Authenticate();
+
+    console.log(Authenticate.user);
 
     // MaterialUI
     const classes = useStyles();
@@ -60,16 +57,20 @@ export default function LandingPage() {
 
     useEffect(() => {
         // Confirm user is logged in
-        // if (currentUser) history.push('/home');
+        if (Authenticate.user) {
+            // User is signed in.
+            history.push('/home');
+        }
       });
 
     // Behavior
     const emailPasswordSignIn = async(email, password) => {
         try {
-            const errorMessage = await signInWithEmailPassword(email, password);
+            const errorMessage = await Auth.signInWithEmailPassword(email, password);
             if (errorMessage !== "") {
                 throw errorMessage;
             } else {
+                await DB.updateUser(Authenticate.user.uid, {lastLoggedIn: new Date()});
                 setEmail("");
                 setPassword("");
                 setErrorMessage("");
@@ -83,22 +84,17 @@ export default function LandingPage() {
 
     const googleSignIn = async() => {
         try {
-            const errorMessage = await signInWithGoogle();
+            const errorMessage = await Auth.signInWithGoogle();
             if (errorMessage !== "") {
                 throw errorMessage;
             } else {
-                let id;
-                auth.onAuthStateChanged(function(user) {
-                    if (user) {
-                      id = user.uid;
-                    } else {
-                      setErrorMessage("Please retry.");
-                    }
-                  });
-                const user = await getUser(id);
+                const uid = Authenticate.user.uid;
+                const email = Authenticate.user.email;
 
-                if (user.exists) await updateUser(id);
-                else await createUser(id);
+                const userA = await DB.getUser(uid);
+
+                if (userA.exists) await DB.updateUser(uid, {lastLoggedIn: new Date()});
+                else await DB.createUser(uid, email);
 
                 setEmail("");
                 setPassword("");
@@ -150,13 +146,6 @@ export default function LandingPage() {
                     Sign up or Log in using Google
                 </Button>
             </section>
-          
-            {currentUser === null ? "User not signed in" : currentUser.email}
-            
-            
-            <p onClick={signOut}>Sign out!</p>
-
-
         </div>
     )
 }
