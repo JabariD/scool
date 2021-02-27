@@ -15,7 +15,7 @@ const useStyles = makeStyles({
         position: "absolute",
         left: 0,
         bottom: 0,
-        height: "100px",
+        height: "65px",
         width: "100%",
     },
 });

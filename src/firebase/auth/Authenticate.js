@@ -2,7 +2,7 @@
 import { firebase, auth } from "../firebase.js";
 
 class Authenticate {
-    static user = firebase.auth().currentUser;
+    static user = null;
 
     async signInWithEmailPassword(email, password) {
         if (email === "" || password === "") return("Cannot have empty field.");

@@ -14,6 +14,7 @@ import SearchBar from '../../components/SearchBar/SearchBar.js';
 import Header from '../../components/Header/Header.js';
 import NavigationBar from '../../components/NavigationBar/NavigationBar.js';
 import Question from '../../components/Question/Question.js';
+import PostQuestionButton from '../../components/PostQuestionButton/PostQuestionButton.js';
 
 // MaterialUI
 import { Select, MenuItem, Button } from '@material-ui/core';
@@ -26,7 +27,7 @@ export default function Home() {
     const Auth = new Authenticate();
     const DB = new Firestore();
 
-    // const user = useContext(AuthContext);
+    const user = useContext(AuthContext);
     // console.log(Authenticate.user.uid);
 
     // State
@@ -39,6 +40,11 @@ export default function Home() {
 
     useEffect( async() => {
         // Confirm user is logged in
+        console.log(user);
+        if (user) {
+            Authenticate.user = user;
+        }
+
         if (Authenticate.user === null) {
             history.push("/");
             return;
@@ -87,7 +93,7 @@ export default function Home() {
             
             <Header pageName="Home" />
 
-            <SearchBar />
+            <SearchBar questions={questions}/>
 
             <main className="questions">
                 { (!subscribeToQuestionList) ? 
@@ -113,7 +119,16 @@ export default function Home() {
                 }
             </main>
 
-            <NavigationBar currentRoute="home" />
+            {
+                (!subscribeToQuestionList) ?
+                <PostQuestionButton postTo="local"/>
+                :
+                <></>
+            }
+
+            <footer className="footer-nav-bar">
+                <NavigationBar currentRoute="home" />
+            </footer>
         </div>
     )
 }
