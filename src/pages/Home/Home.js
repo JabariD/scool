@@ -40,7 +40,8 @@ export default function Home() {
 
     useEffect( async() => {
         // Confirm user is logged in
-        console.log(user);
+        await Auth.IsLoggedIn();
+        console.log(user)
         if (user) {
             Authenticate.user = user;
         }

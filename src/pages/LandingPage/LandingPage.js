@@ -57,7 +57,8 @@ export default function LandingPage() {
 
     useEffect(() => {
         // Confirm user is logged in
-        if (Authenticate.user) {
+        // Auth.IsLoggedIn();
+        if (Auth.IsLoggedIn()) {
             // User is signed in.
             history.push('/home');
         }

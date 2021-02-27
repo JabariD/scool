@@ -4,6 +4,30 @@ import { firebase, auth } from "../firebase.js";
 class Authenticate {
     static user = null;
 
+    async IsLoggedIn() {
+        try {
+          await new Promise((resolve, reject) =>
+            firebase.auth().onAuthStateChanged(
+              user => {
+                if (user) {
+                  // User is signed in.
+                  Authenticate.user = user;
+                  resolve(user)
+                } else {
+                  // No user is signed in.
+                  reject('no user logged in')
+                }
+              },
+              // Prevent console error
+              error => reject(error)
+            )
+          )
+          return true
+        } catch (error) {
+          return false
+        }
+      }
+
     async signInWithEmailPassword(email, password) {
         if (email === "" || password === "") return("Cannot have empty field.");
 
