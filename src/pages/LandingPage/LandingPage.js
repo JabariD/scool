@@ -55,10 +55,10 @@ export default function LandingPage() {
     const history = useHistory();
     const handleOnClick = useCallback(() => history.push('/signup'), [history]);
 
-    useEffect(() => {
+    useEffect( async() => {
         // Confirm user is logged in
-        // Auth.IsLoggedIn();
-        if (Auth.IsLoggedIn()) {
+        const result = await Auth.IsLoggedIn();
+        if (result) {
             // User is signed in.
             history.push('/home');
         }

@@ -28,7 +28,6 @@ export default function Home() {
     const DB = new Firestore();
 
     const user = useContext(AuthContext);
-    // console.log(Authenticate.user.uid);
 
     // State
     const [subscribeToQuestionList, setSubscribeToQuestionsList] = useState(false);
@@ -40,17 +39,11 @@ export default function Home() {
 
     useEffect( async() => {
         // Confirm user is logged in
-        await Auth.IsLoggedIn();
-        console.log(user)
-        if (user) {
-            Authenticate.user = user;
-        }
-
-        if (Authenticate.user === null) {
+        const result = await Auth.IsLoggedIn();
+        if (!result) {
             history.push("/");
             return;
         }
-        console.log(Authenticate.user);
 
         // get questions
 

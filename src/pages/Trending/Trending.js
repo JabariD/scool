@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+
+import { AuthContext } from '../../providers/AuthProvider/AuthProvider.js';
 
 // firebase
+import Authenticate from '../../firebase/auth/Authenticate.js';
 import Firestore from '../../firebase/firestore/Firestore.js';
+
+// React Router
+import { useHistory } from 'react-router-dom';
 
 // components
 import Header from '../../components/Header/Header.js';
@@ -14,11 +20,23 @@ import PostQuestionButton from '../../components/PostQuestionButton/PostQuestion
 import './Trending.css';
 
 export default function Trending() {
+    const history = useHistory();
+    const Auth = new Authenticate();
     const DB = new Firestore();
+
+    const user = useContext(AuthContext);
 
     const [globalQuestions, setGlobalQuestions] = useState([]);
 
     useEffect( async() => {
+        // Confirm user is logged in
+        const result = await Auth.IsLoggedIn();
+
+        if (!result) {
+            history.push("/");
+            return;
+        }
+
         // query global questions
         const questionsExist = await DB.queryQuestions("global");
         let questionArray = [];

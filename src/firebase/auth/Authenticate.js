@@ -15,6 +15,7 @@ class Authenticate {
                   resolve(user)
                 } else {
                   // No user is signed in.
+                  Authenticate.user = null;
                   reject('no user logged in')
                 }
               },
