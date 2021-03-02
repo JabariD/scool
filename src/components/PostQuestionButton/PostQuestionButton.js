@@ -49,8 +49,7 @@ export default function PostQuestionButton(props) {
         
         let error = "";
         if (props.postTo === "local") {
-            const currentUserRef = await DB.getUser(Authenticate.user.uid);
-            const currentUser = currentUserRef.data();
+            const currentUser = await DB.getUser(Authenticate.user.uid);
             error = await DB.postQuestionLocal({id: currentUser.questionID, title: questionTitle, body: questionBody, tags: questionTags}, Authenticate.user.uid);
         } else {
             error = await DB.postQuestionGlobal({title: questionTitle, body: questionBody, tags: questionTags}, Authenticate.user.uid);

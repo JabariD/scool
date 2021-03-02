@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 
+// react router
+import { Link } from "react-router-dom";
+
+// firestore
 import Firestore from '../../firebase/firestore/Firestore';
 
 // css
@@ -14,12 +18,9 @@ export default function Question(props) {
     const [questionEmail, setQuestionEmail] = useState();
 
     const question = props.question;
-    
-
 
     const findUserWithID = async() => {
-      const result = await DB.getUser(question.data.createdByUserID);
-      const user = result.data();
+      const user = await DB.getUser(question.data.createdByUserID);
       setQuestionEmail(user.email);
     }
     findUserWithID();
@@ -31,7 +32,7 @@ export default function Question(props) {
     }
 
     return (
-        <div className="question-card-div">
+        <div key={props.key} className="question-card-div">
            <Card>
                <CardContent>
                     <header>
@@ -68,6 +69,8 @@ export default function Question(props) {
                       <span><i className="far fa-comment"></i></span><span style={styles}>{Object.keys(question.data.comments).length}</span>
 
                     </section>
+
+                    <footer><Link to={`/question/${question.id}`}>See More.</Link></footer>
 
                </CardContent>
            </Card>

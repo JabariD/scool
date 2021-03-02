@@ -41,8 +41,6 @@ export default function LandingPage() {
     const DB = new Firestore();
     const Auth = new Authenticate();
 
-    console.log(Authenticate.user);
-
     // MaterialUI
     const classes = useStyles();
 
@@ -92,9 +90,9 @@ export default function LandingPage() {
                 const uid = Authenticate.user.uid;
                 const email = Authenticate.user.email;
 
-                const userA = await DB.getUser(uid);
+                const user = await DB.getUser(uid);
 
-                if (userA.exists) await DB.updateUser(uid, {lastLoggedIn: new Date()});
+                if (user) await DB.updateUser(uid, {lastLoggedIn: new Date()});
                 else await DB.createUser(uid, email);
 
                 setEmail("");

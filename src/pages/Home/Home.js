@@ -34,8 +34,8 @@ export default function Home() {
     const [questions, setQuestions] = useState([]);
     const [collegeSelected, setCollegeSelected] = useState("");
 
-    // how to MAKE SURE user is logged in? -> use PrivateRoutes
-    // assume User is logged in
+    // confirm user is logged in
+    // get questions for user OR show questions list user can subscribe to
 
     useEffect( async() => {
         // Confirm user is logged in
@@ -45,41 +45,36 @@ export default function Home() {
             return;
         }
 
-        // get questions
+        // get collection ID
+        const userData = await DB.getUser(Authenticate.user.uid);
+        const questionsID = userData.questionID; // collectionID of questions user is subscribed to.
+        
 
-        // get collection ID, if none present suggest some to user
-
-        const userExists = await DB.getUser(Authenticate.user.uid);
-        const userA = userExists.data();
-        const questionsID = userA.questionID;
-
-        if (questionsID === -1) {
+        // if questionID is none allow user to choose subscribe list
+        if (questionsID === "none") {
             setSubscribeToQuestionsList(true);
 
         } else {
-            // then query questions (eventually sort by most popular in every 2 days) and display to user
+            // then query questions
             const questionsExist = await DB.queryQuestions(questionsID);
             let questionArray = [];
             questionsExist.forEach((doc) => {
                 questionArray.push({id: doc.id, data: doc.data()})
             });
             setQuestions(questionArray);
-            //  if (currentUser === null) history.push('/');
         }
 
       }, []);
 
+      // if user clicks submit, we set the user university for that user
     const setUserUniversity = async() => {
         if (collegeSelected === "") return;
         else await DB.updateUser(Authenticate.user.uid, {questionID: collegeSelected});
-        
-
-        // when user confirms their choice, make it their choice in firebase
-        // grab ID from colleges and set it in user's profile
 
         // set it to false
         setSubscribeToQuestionsList(false);
         setCollegeSelected("");
+        window.location.reload();
     }
 
     return (
@@ -92,7 +87,7 @@ export default function Home() {
             <main className="questions">
                 { (!subscribeToQuestionList) ? 
                     questions.map( (question, index) => {
-                        return <Question key={index} question={question}/> 
+                        return <Question key={index} question={question} /> 
                     })
                     : 
                     <div>

@@ -7,14 +7,14 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 // This component simply searches the questions that are queried by the current page BY TITLE and does nothing after that
 export default function SearchBar(props) {
 
-    const [valueSelected, setValueSelected] = useState(null);
+    const [valueselected, setValueSelected] = useState(null);
     const [inputValue, setInputValue] = useState('');
 
     return (
         <div>
-            {console.log(valueSelected) /* <------- here's where the data resides*/}
+            {console.log(valueselected) /* <------- here's where the data resides*/}
             <Autocomplete
-                valueSelected={valueSelected}
+                valueselected={valueselected}
                 onChange={(event, newValue) => {
                     setValueSelected(newValue);
                 }}

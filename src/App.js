@@ -17,6 +17,7 @@ import Home from './pages/Home/Home';
 import Trending from './pages/Trending/Trending';
 import Notifications from './pages/Notifications/Notifications';
 import Messaging from './pages/Messaging/Messaging';
+import QuestionFullPage from './components/QuestionFullPage/QuestionFullPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/signup" component={SignUp} exact/>
           <Route path="/home" component={Home} exact/>
           <Route path="/trending" component={Trending} exact/>
+          <Route path="/question/:questionID" component={QuestionFullPage} exact/>
           <Route path="/notifications" component={Notifications} exact/>
           <Route path="/messaging" component={Messaging} exact/>
           <Route path="*" component={FourZeroFour} />

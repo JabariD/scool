@@ -14,7 +14,7 @@ class Firestore {
                 minor: "",
                 questionsAsked: "",
                 graduating: null,
-                questionID: -1,
+                questionID: "none",
                 email: userEmail,
             });
             console.log("Document successfully updated!");
@@ -25,9 +25,16 @@ class Firestore {
     }
 
     async getUser(userID) {
+        const userRef = firestore.collection("users").doc(userID);
+
         try {
-            const userToGet = firestore.collection("users").doc(userID);
-            return await userToGet.get();
+            const userDocument = await userRef.get();
+            if (userDocument.exists) {
+                return userDocument.data();
+            } else {
+                console.log("The user document you requested does not exist.")
+                return null
+            }
         } catch(e) {
             console.log(e);
         }
@@ -51,6 +58,24 @@ class Firestore {
         } catch(e) {
             console.log(e);
         }
+    }
+
+    async querySpecificQuestion(questionCollectionID, questionDocumentID) {
+        const questionRef = firestore.collection(questionCollectionID).doc(questionDocumentID);
+
+        try {
+            const questionDocument = await questionRef.get();
+            if (questionDocument.exists) {
+                return questionDocument.data();
+            } else {
+                console.log("The specific question you requested does not exist.")
+                return null;
+            }
+        } catch(e) {
+            console.log(e);
+            
+        }
+
     }
 
     async postQuestionLocal(questionObject, userID) {
