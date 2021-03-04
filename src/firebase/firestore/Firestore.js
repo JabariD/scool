@@ -116,6 +116,19 @@ class Firestore {
         }
     }
 
+    async updateSpecificQuestion(questionObject, collectionID) {
+        // question object contains ID
+        const questionToUpdate = firestore.collection(collectionID).doc(questionObject.id);
+        
+        try {
+            await questionToUpdate.update(questionObject.data);
+            console.log("Document successfully updated!");
+        } catch(e) {
+            console.log(e);
+        }
+
+    }
+
     
 }
 

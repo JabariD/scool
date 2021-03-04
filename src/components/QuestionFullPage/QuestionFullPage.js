@@ -33,6 +33,66 @@ export default function QuestionFullPage(props) {
         setQuestion(question);
 
     }, []);
+
+    const handleUpVotes = async() => {
+        const userHasTakenNoAction = !question.upVotes.includes(Authenticate.user.uid) && !question.downVotes.includes(Authenticate.user.uid);
+        const userHasUpVoted = question.upVotes.includes(Authenticate.user.uid);
+  
+        if (userHasTakenNoAction) {
+
+
+          let tempQuestionObject = { ...question };
+          tempQuestionObject.upVotes.push(Authenticate.user.uid);
+          setQuestion(tempQuestionObject);
+          console.log("Liked");
+          await DB.updateSpecificQuestion({data: tempQuestionObject, id: props.match.params.questionID}, props.match.params.collectionID);
+          // change styling of liked 
+        } else if (userHasUpVoted) {
+
+          // remove user uid from array
+          let tempQuestionObject = { ...question };
+          const index = tempQuestionObject.upVotes.indexOf(Authenticate.user.uid);
+          if (index > -1) {
+            tempQuestionObject.upVotes.splice(index, 1);
+          }
+  
+          setQuestion(tempQuestionObject);
+          console.log("Un liked");
+          await DB.updateSpecificQuestion({data: tempQuestionObject, id: props.match.params.questionID}, props.match.params.collectionID);
+          // change styling of liked
+        }
+        
+      }
+  
+      const handleDownVotes = async() => {
+        const userHasTakenNoAction = !question.upVotes.includes(Authenticate.user.uid) && !question.downVotes.includes(Authenticate.user.uid);
+        const userHasDownVoted = question.downVotes.includes(Authenticate.user.uid);
+  
+        if ( userHasTakenNoAction ) {
+
+
+          let tempQuestionObject = { ...question };
+          tempQuestionObject.downVotes.push(Authenticate.user.uid);
+          setQuestion(tempQuestionObject);
+          console.log("Disliked");
+          await DB.updateSpecificQuestion({data: tempQuestionObject, id: props.match.params.questionID}, props.match.params.collectionID);
+          // change styling
+        } else if (userHasDownVoted) {
+
+
+          // remove user uid from array
+          let tempQuestionObject = { ...question };
+          const index = tempQuestionObject.downVotes.indexOf(Authenticate.user.uid);
+          if (index > -1) {
+            tempQuestionObject.downVotes.splice(index, 1);
+          }
+  
+          setQuestion(tempQuestionObject);
+          console.log("Un disliked");
+          await DB.updateSpecificQuestion({data: tempQuestionObject, id: props.match.params.questionID}, props.match.params.collectionID);
+          // change styling of liked
+        }
+      }
     
 
     return (
@@ -70,9 +130,9 @@ export default function QuestionFullPage(props) {
                             </section>
 
                             <footer className="buttons">
-                                <span><i className="far fa-thumbs-up"></i></span>
+                                <span id="question-full-fa-upvote" onClick={handleUpVotes}><i className="far fa-thumbs-up"></i></span>
 
-                                <span><i className="far fa-thumbs-down"></i></span>
+                                <span id="question-full-fa-downvote" onClick={handleDownVotes}><i className="far fa-thumbs-down"></i></span>
 
                                 <span><i className="far fa-comment"></i></span>
                             </footer>
