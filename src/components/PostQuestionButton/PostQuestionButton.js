@@ -48,19 +48,22 @@ export default function PostQuestionButton(props) {
         }
         
         let error = "";
-        if (props.postTo === "local") {
+        // handles both local and global case
+        if (props.postTo === "local") { // if a local question
             const currentUser = await DB.getUser(Authenticate.user.uid);
             error = await DB.postQuestionLocal({id: currentUser.questionID, title: questionTitle, body: questionBody, tags: questionTags}, Authenticate.user.uid);
         } else {
             error = await DB.postQuestionGlobal({title: questionTitle, body: questionBody, tags: questionTags}, Authenticate.user.uid);
         }
 
+        // if no error then we posted
         if (error === "") {
             setQuestionTitle("");
             setQuestionBody("");
             setQuestionRawTags("");
             setQuestionTags([]);
             handleClose();
+            window.location.reload();
         }
         
     }

@@ -32,6 +32,7 @@ export default function Home() {
     // State
     const [subscribeToQuestionList, setSubscribeToQuestionsList] = useState(false);
     const [questions, setQuestions] = useState([]);
+    const [questionCollectionID, setQuestionCollectionID] = useState("");
     const [collegeSelected, setCollegeSelected] = useState("");
 
     // confirm user is logged in
@@ -48,6 +49,7 @@ export default function Home() {
         // get collection ID
         const userData = await DB.getUser(Authenticate.user.uid);
         const questionsID = userData.questionID; // collectionID of questions user is subscribed to.
+        setQuestionCollectionID(questionsID);
         
 
         // if questionID is none allow user to choose subscribe list
@@ -82,12 +84,12 @@ export default function Home() {
             
             <Header pageName="Home" />
 
-            <SearchBar questions={questions}/>
+            <SearchBar questions={questions} questionCollectionID={questionCollectionID}/>
 
             <main className="questions">
                 { (!subscribeToQuestionList) ? 
                     questions.map( (question, index) => {
-                        return <Question key={index} question={question} /> 
+                        return <Question key={index} question={question} id={questionCollectionID}/> 
                     })
                     : 
                     <div>

@@ -1,0 +1,62 @@
+/* Header */
+
+.question-full-page-header {
+    text-align: center;
+    margin: 25px;
+}
+
+.question-full-page-header span {
+    font-size: 1.5rem;
+    position: absolute; 
+	top: 8px; 
+	left: 6px; 
+    color: #F39237;
+}
+
+/* Question Whole Components */
+.question-full-page-card {
+    margin-bottom: 25px;
+}
+
+/* Question Header */
+#question-full-title {
+    font-weight: bold;
+    margin-left: 20px;
+    font-size: 1.1em;
+}
+
+#question-full-user {
+    display: block;
+    margin-left: 35px;
+    color: #4C4C54;
+}
+
+/* Question main */
+.question-full-page-card main {
+    margin-bottom: 20px;
+}
+
+/* Question tags */
+.question-full-page-card .tags {
+    margin-bottom: 10px;
+}
+
+#question-full-tag {
+    background-color:orange;
+    margin-right: 10px;
+    padding: 4px 8px;
+    color: white;
+    border-radius: 10px;
+}
+
+/* Detailed section */
+.question-full-page-card .detailed {
+    color: #F39237;
+    padding: 4px;
+    border-bottom: 1px solid #F39237;
+}
+
+/* Footer section */
+.question-full-page-card .buttons {
+    backgroundColor: #F39237;
+}

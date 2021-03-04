@@ -83,12 +83,12 @@ class Firestore {
             await firestore.collection(questionObject.id).add({
                 comments: [],
                 createdByUserID: userID,
-                downVotes: 0,
+                downVotes: [],
                 questionBody: questionObject.body,
                 tags: questionObject.tags,
                 time_posted: new Date(),
                 title: questionObject.title,
-                upVotes: 0,
+                upVotes: [],
             })
             return "";
         } catch(e) {
@@ -102,12 +102,12 @@ class Firestore {
             await firestore.collection("global").add({
                 comments: [],
                 createdByUserID: userID,
-                downVotes: 0,
+                downVotes: [],
                 questionBody: questionObject.body,
                 tags: questionObject.tags,
                 time_posted: new Date(),
                 title: questionObject.title,
-                upVotes: 0,
+                upVotes: [],
             })
             return "";
         } catch(e) {
