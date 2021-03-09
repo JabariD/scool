@@ -24,6 +24,7 @@ const useStyles = makeStyles({
   });
 
 export default function SignUp() {
+    const Auth = new Authenticate();
     const DB = new Firestore();
 
     const history = useHistory();
@@ -37,7 +38,7 @@ export default function SignUp() {
     const [errorMessage, setErrorMessage] = useState("");
 
     const emailPasswordSignUp = async() => {
-      const errorMessage = await DB.signUpWithEmailPassword(email, password);
+      const errorMessage = await Auth.signUpWithEmailPassword(email, password);
        if (errorMessage !== "") {
         setErrorMessage("Error: " + errorMessage);
        } else {

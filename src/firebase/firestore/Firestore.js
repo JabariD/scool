@@ -9,7 +9,7 @@ class Firestore {
             await userToUpdate.set({
                 created: new Date(),
                 bio: "",
-                directMessages: "",
+                directMessages: [],
                 major: "",
                 minor: "",
                 questionsAsked: "",
@@ -117,6 +117,7 @@ class Firestore {
     }
 
     async updateSpecificQuestion(questionObject, collectionID) {
+        console.log(questionObject);
         // question object contains ID
         const questionToUpdate = firestore.collection(collectionID).doc(questionObject.id);
         

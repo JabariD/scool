@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Authenticate from '../../firebase/auth/Authenticate.js';
 
 // React Router
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 // styles
 import "./Header.css";
@@ -33,6 +33,7 @@ export default function Header( props ) {
         history.push('/');
     }
 
+
     const drawerLinks = () => (
         <div className="drawerLinks" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
             <section>
@@ -42,7 +43,7 @@ export default function Header( props ) {
 
             <List>
                 <ListItem>
-                    <ListItemText primary={"Profile"} />
+                    <ListItemText onClick={() => history.push(`/profile/${Authenticate.user.uid}`)} primary={"Profile"} />
                 </ListItem>
                 <ListItem>
                     <ListItemText primary={"Saved"} />

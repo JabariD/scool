@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 // react router
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
 
 // firestore
 import Firestore from '../../firebase/firestore/Firestore';
-import Authenticate from '../../firebase/auth/Authenticate';
+import Authenticate from '../../firebase/auth/Authenticate'
 
 // css
 import './Question.css';
@@ -15,7 +16,7 @@ import { Card, CardContent } from '@material-ui/core'
 
 export default function Question(props) {
     const DB = new Firestore(); 
-    const Auth = new Authenticate();
+    const history = useHistory();
 
     const [questionEmail, setQuestionEmail] = useState();
     const [questionObject, setQuestionObject] = useState(null);
@@ -23,17 +24,44 @@ export default function Question(props) {
 
     useEffect(async() => {
       setQuestionObject(props.question);
-      getUserWhoCreatedQuestion();
+      await getUserWhoCreatedQuestion();
+      CheckUpVoteDownVoteState();
     }, []);
 
+
+    const CheckUpVoteDownVoteState = () => {
+      if (props.question.data.upVotes.includes(Authenticate.user.uid)) {
+        return (
+          <>
+            <span id="question-fa-upvote" onClick={handleUpVotes} style={{color: "orange"}}><i className="far fa-thumbs-up"></i></span><span style={fontIconStyle}>{props.question.data.upVotes.length}</span>
+            <span id="question-fa-downvote" onClick={handleDownVotes}><i className="far fa-thumbs-down"></i></span><span style={fontIconStyle}>{props.question.data.downVotes.length}</span>
+          </>
+        )
+
+      } else if (props.question.data.downVotes.includes(Authenticate.user.uid)) {
+        return (
+        <>
+          <span id="question-fa-upvote" onClick={handleUpVotes}><i className="far fa-thumbs-up"></i></span><span style={fontIconStyle}>{props.question.data.upVotes.length}</span>
+          <span id="question-fa-downvote" onClick={handleDownVotes} style={{color: "orange"}}><i className="far fa-thumbs-down"></i></span><span style={fontIconStyle}>{props.question.data.downVotes.length}</span>
+        </>
+        )
+      } else {
+        return (
+        <>
+          <span id="question-fa-upvote" onClick={handleUpVotes}><i className="far fa-thumbs-up"></i></span><span style={fontIconStyle}>{props.question.data.upVotes.length}</span>
+          <span id="question-fa-downvote" onClick={handleDownVotes}><i className="far fa-thumbs-down"></i></span><span style={fontIconStyle}>{props.question.data.downVotes.length}</span>
+        </>
+        )
+      }
+    }
 
 
     const getUserWhoCreatedQuestion = async() => {
       const user = await DB.getUser(props.question.data.createdByUserID);
-      setQuestionCollectionID(user.questionID);
+      if (props.id === "global") setQuestionCollectionID("global")
+      else setQuestionCollectionID(user.questionID);
       setQuestionEmail(user.email);
     }
-
 
     const fontIconStyle = {
       marginRight: "10px",
@@ -48,29 +76,24 @@ export default function Question(props) {
       if (userHasTakenNoAction) {
         // quickly change styling for no delay on UI
         document.getElementById("question-fa-upvote").style.color = "orange";
-
-        // copy question object
-        let tempQuestionObject = { ...questionObject };
-        tempQuestionObject.data.upVotes.push(Authenticate.user.uid); // push ID onto state
-        setQuestionObject(tempQuestionObject);
-        console.log("Liked");
-        await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
+        await userUpVote();
+        
         
        
       } else if (userHasUpVoted) {
         // quickly change styling for no delay on UI
         document.getElementById("question-fa-upvote").style.color = "black";
+        await userRemoveUpVote();
 
-        // remove user uid from array
-        let tempQuestionObject = { ...questionObject };
-        const index = tempQuestionObject.data.upVotes.indexOf(Authenticate.user.uid);
-        if (index > -1) {
-          tempQuestionObject.data.upVotes.splice(index, 1);
-        }
 
-        setQuestionObject(tempQuestionObject);
-        console.log("Un liked");
-        await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
+      } else {
+        // this must mean user has downvoted
+        // quickly change styling for no delay on UI
+        document.getElementById("question-fa-upvote").style.color = "orange";
+        document.getElementById("question-fa-downvote").style.color = "black";
+
+        await userRemoveDownVote();
+        await userUpVote();
       }
       
     }
@@ -82,33 +105,66 @@ export default function Question(props) {
       if ( userHasTakenNoAction ) {
         // quickly change styling for no delay on UI
         document.getElementById("question-fa-downvote").style.color = "orange";
+        await userDownVote();
 
-        let tempQuestionObject = { ...questionObject };
-        tempQuestionObject.data.downVotes.push(Authenticate.user.uid);
-        setQuestionObject(tempQuestionObject);
-        console.log("Disliked");
-        await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
+        
 
       } else if (userHasDownVoted) {
         // quickly change styling for no delay on UI
         document.getElementById("question-fa-downvote").style.color = "black";
+        await userRemoveDownVote();
 
-        // remove user uid from array
-        let tempQuestionObject = { ...questionObject };
-        const index = tempQuestionObject.data.downVotes.indexOf(Authenticate.user.uid);
-        if (index > -1) {
-          tempQuestionObject.data.downVotes.splice(index, 1);
-        }
+      } else {
+        document.getElementById("question-fa-upvote").style.color = "black";
+        document.getElementById("question-fa-downvote").style.color = "orange";
 
-        setQuestionObject(tempQuestionObject);
-        console.log("Un disliked");
-        await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
-
+        await userRemoveUpVote();
+        await userDownVote();
       }
     }
-    
 
-    console.log(questionObject);
+    const userUpVote = async() => {
+      // copy question object
+      let tempQuestionObject = { ...questionObject };
+      tempQuestionObject.data.upVotes.push(Authenticate.user.uid); // push ID onto state
+      setQuestionObject(tempQuestionObject);
+      console.log("Liked");
+      await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
+    }
+
+    const userRemoveUpVote = async() => {
+      // remove user uid from array
+      let tempQuestionObject = { ...questionObject };
+      const index = tempQuestionObject.data.upVotes.indexOf(Authenticate.user.uid);
+      if (index > -1) {
+        tempQuestionObject.data.upVotes.splice(index, 1);
+      }
+
+      setQuestionObject(tempQuestionObject);
+      console.log("Un liked");
+      await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
+    }
+
+    const userDownVote = async() => {
+      let tempQuestionObject = { ...questionObject };
+        tempQuestionObject.data.downVotes.push(Authenticate.user.uid);
+        setQuestionObject(tempQuestionObject);
+        console.log("Disliked");
+        await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
+    }
+
+    const userRemoveDownVote = async() => {
+      // remove user uid from array
+      let tempQuestionObject = { ...questionObject };
+      const index = tempQuestionObject.data.downVotes.indexOf(Authenticate.user.uid);
+      if (index > -1) {
+        tempQuestionObject.data.downVotes.splice(index, 1);
+      }
+
+      setQuestionObject(tempQuestionObject);
+      console.log("Un disliked");
+      await DB.updateSpecificQuestion(tempQuestionObject, questionCollectionID);
+    }
 
     return (
         <div className="question-card-div">
@@ -119,7 +175,7 @@ export default function Question(props) {
                         <span><i className="fas fa-user"></i></span> 
                         {/* User picture goes above here */}
                         <span id="question-title">{questionObject.data.title}</span>
-                        <span id="question-user">{questionEmail}</span>
+                        <Link to={`/profile/${questionObject.data.createdByUserID}`}><span id="question-user">{questionEmail}</span></Link>
                         
                     </header>
 
@@ -140,16 +196,13 @@ export default function Question(props) {
 
                     <section>
                    
-                      <span id="question-fa-upvote" onClick={handleUpVotes}><i className="far fa-thumbs-up"></i></span><span style={fontIconStyle}>{questionObject.data.upVotes.length}</span>
+                      <CheckUpVoteDownVoteState />
 
-                      <span id="question-fa-downvote" onClick={handleDownVotes}><i className="far fa-thumbs-down"></i></span><span style={fontIconStyle}>{questionObject.data.downVotes.length}</span>
-
-                      <span id="question-fa-comment"><i className="far fa-comment"></i></span><span style={fontIconStyle}>{Object.keys(questionObject.data.comments).length}</span>
+                      <span id="question-fa-comment" onClick={() => history.push(`/${props.id}/${questionObject.id}`)}><i className="far fa-comment"></i></span><span style={fontIconStyle}>{Object.keys(questionObject.data.comments).length}</span>
 
                     </section>
 
                     <footer><Link to={`/${props.id}/${questionObject.id}`}>See More.</Link></footer>
-
                </CardContent>
            </Card>
            :

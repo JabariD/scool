@@ -51,12 +51,12 @@ export default function Trending() {
 
             <Header pageName="Trending" />
 
-            <SearchBar questions={globalQuestions} questionCollectionID={"global"}/>
+            <SearchBar questions={globalQuestions} questionCollectionID="global"/>
 
             <main className="questions">
                 {
                     globalQuestions.map( (question, index) => {
-                        return <Question key={index} question={question} id={"global"}/> 
+                        return <Question key={index} question={question} id="global"/> 
                     })
                 }
             </main>

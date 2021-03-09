@@ -9,7 +9,7 @@ import { useHistory } from 'react-router-dom';
 import "./QuestionFullPage.css";
 
 // Material UI
-import { Card, CardContent } from '@material-ui/core'
+import { Card, CardContent, TextField, Button } from '@material-ui/core'
 
 
 export default function QuestionFullPage(props) {
@@ -18,6 +18,8 @@ export default function QuestionFullPage(props) {
     const history = useHistory();
 
     const [question, setQuestion] = useState(null);
+    const [displayCommentBox, setDisplayCommentBox] = useState(false);
+    const [comment, setComment] = useState("");
 
     useEffect( async() => {
         // double check logged in
@@ -64,7 +66,7 @@ export default function QuestionFullPage(props) {
         
       }
   
-      const handleDownVotes = async() => {
+    const handleDownVotes = async() => {
         const userHasTakenNoAction = !question.upVotes.includes(Authenticate.user.uid) && !question.downVotes.includes(Authenticate.user.uid);
         const userHasDownVoted = question.downVotes.includes(Authenticate.user.uid);
   
@@ -93,13 +95,28 @@ export default function QuestionFullPage(props) {
           // change styling of liked
         }
       }
+
+    const handleSubmitComment = async() => {
+        if (comment === "") return null;
+        // helper text?
+        else {
+            let tempQuestion = { ...question };
+            const newComment = {createdByUserID: Authenticate.user.uid, body: comment, createdAt: new Date(), upVotes: 0, downVotes: 0, replies: []};
+            tempQuestion.comments.push(newComment);
+        
+            setQuestion(tempQuestion);
+            setComment("");
+            setDisplayCommentBox(false);
+
+            await DB.updateSpecificQuestion({data: tempQuestion, id: props.match.params.questionID}, props.match.params.collectionID);
+        }
+      }
     
 
     return (
         <div>
             { (question) ?
                 <div>
-                    {console.log(question)}
 
                 <header className="question-full-page-header">
                     <span className="back" onClick={() => history.goBack()}><i className="fas fa-arrow-left"></i></span>
@@ -134,13 +151,53 @@ export default function QuestionFullPage(props) {
 
                                 <span id="question-full-fa-downvote" onClick={handleDownVotes}><i className="far fa-thumbs-down"></i></span>
 
-                                <span><i className="far fa-comment"></i></span>
+                                <span><i className="far fa-comment" onClick={() => setDisplayCommentBox(!displayCommentBox)}></i></span>
                             </footer>
                         </CardContent>
                     </Card>
                 </div>
 
+                {
+                    (displayCommentBox) ? 
+                    <Card>
+                        <CardContent>
+                            <span onClick={() => setDisplayCommentBox(false)}><i className="fas fa-times-circle"></i></span>
+                            <TextField value={comment} onChange={(e) => setComment(e.target.value)}></TextField>
+                            <Button onClick={handleSubmitComment}>Post</Button>
+                        </CardContent>
+                    </Card>
+                    :
+                    <></>
+
+                }
+
                 {/* Loop through each comments */}
+                <div>
+                    {
+                        question.comments.map((com, index) => {
+                            return (
+                                <div key={index}>
+                                    <Card>
+                                        <CardContent>
+                                            <header>
+
+                                            </header>
+                                            <main>
+                                                {com.body}
+                                            </main>
+
+                                            <section>
+                                                
+                                            </section>
+                                        </CardContent>
+                                    </Card>    
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+
+
                 </div>
                 :
                 <></>
