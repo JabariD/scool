@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // firebase
 import Firestore from '../../firebase/firestore/Firestore.js';
@@ -29,6 +29,7 @@ export default function PostQuestionButton(props) {
     const [questionBody, setQuestionBody] = useState("");
     const [questionTags, setQuestionTags] = useState([]);
     const [questionRawTags, setQuestionRawTags] = useState("");
+
     
     const handleClose = () => {
         setOpen(false);
@@ -40,7 +41,7 @@ export default function PostQuestionButton(props) {
     }
 
     const handleSubmitQuestion = async() => {
-        console.log("Handle submit question");
+        
 
         if (questionTitle === "" || questionBody === "" || questionTags.length === 0) {
             console.log("Error! No empty fields.");
@@ -76,7 +77,7 @@ export default function PostQuestionButton(props) {
                 <form>
                     <TextField id="standard-basic" label="Title" value={questionTitle} onChange={(e) => setQuestionTitle(e.target.value)}/>
                     <TextField id="standard-multiline-static" label="Body" multiline value={questionBody} onChange={(e) => setQuestionBody(e.target.value)} />
-                    <TextField id="standard-basic" label="Tags" value={questionRawTags} onChange={(e) => handleTags(e.target.value)} placeholder="e.g. #registration"/>
+                    <TextField id="standard-basic" label="Tags" value={questionRawTags} onChange={(e) => handleTags(e.target.value)} placeholder="e.g. calc2, integrals, math"/>
                     <Button variant="contained" onClick={handleSubmitQuestion}>Submit Question</Button>
                 </form>
             </div>

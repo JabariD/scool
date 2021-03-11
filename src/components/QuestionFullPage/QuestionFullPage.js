@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Authenticate from '../../firebase/auth/Authenticate.js';
 import Firestore from '../../firebase/firestore/Firestore';
 
 // React Router
 import { useHistory } from 'react-router-dom';
+
+// Editable content
+import ContentEditable from "react-contenteditable";
 
 // css
 import "./QuestionFullPage.css";
@@ -18,8 +21,12 @@ export default function QuestionFullPage(props) {
     const history = useHistory();
 
     const [question, setQuestion] = useState(null);
+
     const [displayCommentBox, setDisplayCommentBox] = useState(false);
     const [comment, setComment] = useState("");
+
+    const [questionEditBody, setQuestionEditBody] = useState("");
+    const editableRef = useRef('');
 
     useEffect( async() => {
         // double check logged in
@@ -33,6 +40,7 @@ export default function QuestionFullPage(props) {
         // get question from DB in that collection
         const question = await DB.querySpecificQuestion(props.match.params.collectionID, props.match.params.questionID);
         setQuestion(question);
+        setQuestionEditBody(question.questionBody);
 
     }, []);
 
@@ -112,6 +120,25 @@ export default function QuestionFullPage(props) {
         }
       }
     
+    const handleQuestionEdit = (event) => {
+        // questionEditBody.current = event.target.value;
+        setQuestionEditBody(event.target.value);
+    }
+
+    const handleOnSave = async() => {
+        const tempQuestion = {...question};
+        tempQuestion.questionBody = editableRef.current.innerText;
+
+        await DB.updateSpecificQuestion({id: props.match.params.questionID, data: tempQuestion}, props.match.params.collectionID);
+    }
+
+    const handleDelete = async() => {
+        if (window.confirm("Confirm deletion of EVERYTHING that pertains to this question (question, comments, upvotes)? NOTE: This action cannot be undone!")) {
+            await DB.deleteSpecificQuestion({id: props.match.params.questionID}, props.match.params.collectionID);
+            history.goBack();
+        }
+    }
+    
 
     return (
         <div>
@@ -133,7 +160,18 @@ export default function QuestionFullPage(props) {
                             </header>
 
                             <main>
-                                {question.questionBody}
+                                <pre>
+                                { (question.createdByUserID === Authenticate.user.uid) ?
+                                 <ContentEditable
+                                 innerRef={editableRef}
+                                 html={questionEditBody} // innerHTML of the editable div
+                                 disabled={false} // use true to disable edition
+                                 onChange={handleQuestionEdit} // handle innerHTML change
+                               />
+                                :
+                                question.questionBody}
+                                </pre>
+     
                             </main>
                             
                             <section className="tags">
@@ -153,6 +191,19 @@ export default function QuestionFullPage(props) {
 
                                 <span><i className="far fa-comment" onClick={() => setDisplayCommentBox(!displayCommentBox)}></i></span>
                             </footer>
+
+                            <section>
+                                {
+                                    (question.createdByUserID === Authenticate.user.uid) ?
+                                    <>
+                                        <span onClick={handleOnSave}><i className="fas fa-save"></i></span>
+                                        <span onClick={handleDelete}><i className="fas fa-trash"></i></span>
+                                        </>
+                                        
+                                    :
+                                    <></>
+                                }
+                            </section>
                         </CardContent>
                     </Card>
                 </div>

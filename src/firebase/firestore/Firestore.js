@@ -117,7 +117,6 @@ class Firestore {
     }
 
     async updateSpecificQuestion(questionObject, collectionID) {
-        console.log(questionObject);
         // question object contains ID
         const questionToUpdate = firestore.collection(collectionID).doc(questionObject.id);
         
@@ -128,6 +127,17 @@ class Firestore {
             console.log(e);
         }
 
+    }
+
+    async deleteSpecificQuestion(questionObject, collectionID) {
+        const questionToDelete = firestore.collection(collectionID).doc(questionObject.id);
+
+        try {
+            await questionToDelete.delete();
+            console.log("Document successfully deleted!");
+        } catch(e) {
+            console.log(e);
+        }
     }
 
     

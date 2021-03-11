@@ -35,6 +35,9 @@ export default function Home() {
     const [questionCollectionID, setQuestionCollectionID] = useState("");
     const [collegeSelected, setCollegeSelected] = useState("");
 
+    // edit question / delete question
+    const [questionObjectToPerformAction, setQuestionObjectToPerformAction] = useState(null);
+
     // confirm user is logged in
     // get questions for user OR show questions list user can subscribe to
 
@@ -78,6 +81,8 @@ export default function Home() {
         setCollegeSelected("");
         window.location.reload();
     }
+    
+
 
     return (
         <div className="home">
@@ -89,7 +94,7 @@ export default function Home() {
             <main className="questions">
                 { (!subscribeToQuestionList) ? 
                     questions.map( (question, index) => {
-                        return <Question key={index} question={question} id={questionCollectionID}/> 
+                        return <Question key={index} question={question} id={questionCollectionID} /> 
                     })
                     : 
                     <div>
@@ -101,7 +106,8 @@ export default function Home() {
                             value={collegeSelected}
                             onChange={(e) => setCollegeSelected(e.target.value)}
                             >
-                            <MenuItem value={"huBison1867"}>Howard U</MenuItem>
+                            <MenuItem value={"huBison1867"}>Howard University</MenuItem>
+                            <MenuItem value={"wellesley"}>Wellesley University</MenuItem>
                         </Select>
                         <Button onClick={setUserUniversity}>Submit</Button>
                         <p>This can be changed later.</p>

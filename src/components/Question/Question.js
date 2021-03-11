@@ -12,25 +12,37 @@ import Authenticate from '../../firebase/auth/Authenticate'
 import './Question.css';
 
 // Material UI
-import { Card, CardContent } from '@material-ui/core'
+import { Card, CardContent, Menu, MenuItem } from '@material-ui/core'
 
 export default function Question(props) {
     const DB = new Firestore(); 
+    const Auth = new Authenticate();
     const history = useHistory();
 
     const [questionEmail, setQuestionEmail] = useState();
     const [questionObject, setQuestionObject] = useState(null);
     const [questionCollectionID, setQuestionCollectionID] = useState("");
+    const [id, setID] = useState("");
+
+    const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(async() => {
+      // Confirm user is logged in
+      const result = await Auth.IsLoggedIn();
+      if (!result) {
+          history.push("/");
+          return;
+      }
+
+      setID(Authenticate.user.uid);
+
       setQuestionObject(props.question);
       await getUserWhoCreatedQuestion();
-      CheckUpVoteDownVoteState();
     }, []);
 
 
     const CheckUpVoteDownVoteState = () => {
-      if (props.question.data.upVotes.includes(Authenticate.user.uid)) {
+      if (props.question.data.upVotes.includes(id)) {
         return (
           <>
             <span id="question-fa-upvote" onClick={handleUpVotes} style={{color: "orange"}}><i className="far fa-thumbs-up"></i></span><span style={fontIconStyle}>{props.question.data.upVotes.length}</span>
@@ -38,7 +50,7 @@ export default function Question(props) {
           </>
         )
 
-      } else if (props.question.data.downVotes.includes(Authenticate.user.uid)) {
+      } else if (props.question.data.downVotes.includes(id)) {
         return (
         <>
           <span id="question-fa-upvote" onClick={handleUpVotes}><i className="far fa-thumbs-up"></i></span><span style={fontIconStyle}>{props.question.data.upVotes.length}</span>
@@ -53,6 +65,35 @@ export default function Question(props) {
         </>
         )
       }
+    }
+
+    const IfUserOwnQuestion = () => {
+      if (props.question.data.createdByUserID === id) {
+        return (
+          <>
+            <span aria-controls="simple-menu" aria-haspopup="true" style={{float:'right'}} onClick={(e) => setAnchorEl(e.currentTarget)}><i className="fas fa-ellipsis-v"></i></span>
+            <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)}
+            >
+              <MenuItem onClick={handleAction}>Edit</MenuItem>
+              <MenuItem onClick={handleAction}>Delete</MenuItem>
+            </Menu>
+          </>
+         
+        )
+      } else {
+        return <></>
+      }
+    }
+
+    const handleAction = () => {
+      setAnchorEl(null);
+      history.push(`/${props.id}/${questionObject.id}`);
+      // call props
     }
 
 
@@ -171,6 +212,9 @@ export default function Question(props) {
           {(questionObject) ?
            <Card>
                <CardContent>
+                
+                    <IfUserOwnQuestion/>
+                  
                     <header>
                         <span><i className="fas fa-user"></i></span> 
                         {/* User picture goes above here */}
@@ -196,7 +240,9 @@ export default function Question(props) {
 
                     <section>
                    
-                      <CheckUpVoteDownVoteState />
+                     
+                        <CheckUpVoteDownVoteState />
+                    
 
                       <span id="question-fa-comment" onClick={() => history.push(`/${props.id}/${questionObject.id}`)}><i className="far fa-comment"></i></span><span style={fontIconStyle}>{Object.keys(questionObject.data.comments).length}</span>
 
@@ -206,7 +252,7 @@ export default function Question(props) {
                </CardContent>
            </Card>
            :
-           <></>
+           <>Unable to grab question content</>
           }
         </div>
     )
