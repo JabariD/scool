@@ -22,21 +22,16 @@ import { Select, MenuItem, Button } from '@material-ui/core';
 // styles
 import './Home.css';
 
-export default function Home() {
+export default function Home( props ) {
     const history = useHistory();
     const Auth = new Authenticate();
     const DB = new Firestore();
-
-    const user = useContext(AuthContext);
 
     // State
     const [subscribeToQuestionList, setSubscribeToQuestionsList] = useState(false);
     const [questions, setQuestions] = useState([]);
     const [questionCollectionID, setQuestionCollectionID] = useState("");
     const [collegeSelected, setCollegeSelected] = useState("");
-
-    // edit question / delete question
-    const [questionObjectToPerformAction, setQuestionObjectToPerformAction] = useState(null);
 
     // confirm user is logged in
     // get questions for user OR show questions list user can subscribe to
@@ -50,24 +45,15 @@ export default function Home() {
         }
 
         // get collection ID
-        const userData = await DB.getUser(Authenticate.user.uid);
-        const questionsID = userData.questionID; // collectionID of questions user is subscribed to.
+        const user = await DB.getUser(Authenticate.user.uid);
+        const questionsID = user.questionID; // collectionID of questions user is subscribed to.
         setQuestionCollectionID(questionsID);
-        
 
         // if questionID is none allow user to choose subscribe list
-        if (questionsID === "none") {
-            setSubscribeToQuestionsList(true);
+        if (questionsID === "none") setSubscribeToQuestionsList(true);
+        else await syncQuestion();
 
-        } else {
-            // then query questions
-            const questionsExist = await DB.queryQuestions(questionsID);
-            let questionArray = [];
-            questionsExist.forEach((doc) => {
-                questionArray.push({id: doc.id, data: doc.data()})
-            });
-            setQuestions(questionArray);
-        }
+        
 
       }, []);
 
@@ -81,6 +67,16 @@ export default function Home() {
         setCollegeSelected("");
         window.location.reload();
     }
+
+    const syncQuestion = async() => {
+        // query questions
+        const questionsExist = await DB.queryQuestions(questionCollectionID);
+        let questionArray = [];
+        questionsExist.forEach((doc) => {
+            questionArray.push({id: doc.id, data: doc.data()})
+        });
+        setQuestions(questionArray);
+    }
     
 
 
@@ -89,7 +85,13 @@ export default function Home() {
             
             <Header pageName="Home" />
 
-            <SearchBar questions={questions} questionCollectionID={questionCollectionID}/>
+            <SearchBar questions={questions} questionCollectionID={questionCollectionID}/> 
+            {
+                (!subscribeToQuestionList) ?
+                    <div id="home-icon-page" title="Get latest" onClick={syncQuestion}><i class="fas fa-sync"></i></div>
+                :
+                    <></>
+            }
 
             <main className="questions">
                 { (!subscribeToQuestionList) ? 
@@ -118,9 +120,9 @@ export default function Home() {
 
             {
                 (!subscribeToQuestionList) ?
-                <PostQuestionButton postTo="local"/>
+                    <PostQuestionButton postTo="local"/>
                 :
-                <></>
+                    <></>
             }
 
             <footer className="footer-nav-bar">

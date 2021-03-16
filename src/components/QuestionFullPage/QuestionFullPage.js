@@ -26,7 +26,9 @@ export default function QuestionFullPage(props) {
     const [comment, setComment] = useState("");
 
     const [questionEditBody, setQuestionEditBody] = useState("");
-    const editableRef = useRef('');
+    const [questionEditTitle, setQuestionEditTitle] = useState("");
+    const editableBodyRef = useRef('');
+    const editableTitleRef = useRef('');
 
     useEffect( async() => {
         // double check logged in
@@ -40,7 +42,9 @@ export default function QuestionFullPage(props) {
         // get question from DB in that collection
         const question = await DB.querySpecificQuestion(props.match.params.collectionID, props.match.params.questionID);
         setQuestion(question);
+        setQuestionEditTitle(question.title);
         setQuestionEditBody(question.questionBody);
+        console.log(question);
 
     }, []);
 
@@ -119,15 +123,10 @@ export default function QuestionFullPage(props) {
             await DB.updateSpecificQuestion({data: tempQuestion, id: props.match.params.questionID}, props.match.params.collectionID);
         }
       }
-    
-    const handleQuestionEdit = (event) => {
-        // questionEditBody.current = event.target.value;
-        setQuestionEditBody(event.target.value);
-    }
 
     const handleOnSave = async() => {
         const tempQuestion = {...question};
-        tempQuestion.questionBody = editableRef.current.innerText;
+        tempQuestion.questionBody = editableBodyRef.current.innerText;
 
         await DB.updateSpecificQuestion({id: props.match.params.questionID, data: tempQuestion}, props.match.params.collectionID);
     }
@@ -138,7 +137,6 @@ export default function QuestionFullPage(props) {
             history.goBack();
         }
     }
-    
 
     return (
         <div>
@@ -146,15 +144,32 @@ export default function QuestionFullPage(props) {
                 <div>
 
                 <header className="question-full-page-header">
-                    <span className="back" onClick={() => history.goBack()}><i className="fas fa-arrow-left"></i></span>
+                    <span id="back-icon-full-page" onClick={() => history.goBack()}><i className="fas fa-arrow-left"></i></span>
                     <h3>Post</h3>
                 </header>
 
                 <div className="question-full-page-card">
                     <Card>
                         <CardContent>
+                            {
+                                (question.createdByUserID === Authenticate.user.uid) ?
+                                <div id="notes-to-user">This is your question! Click into the question title and body to edit. Make sure to save!</div>
+                                :
+                                <></>
+                            }
                             <header>
-                                <span id="question-full-title">{question.title}</span>
+                 
+                                { (question.createdByUserID === Authenticate.user.uid) ?
+                                 <ContentEditable
+                                 innerRef={editableTitleRef}
+                                 html={questionEditTitle} // innerHTML of the editable div
+                                 disabled={false} // use true to disable edition
+                                 onChange={(e) => setQuestionEditTitle(e.target.value)} // handle innerHTML change
+                               />
+                                :
+                                <span id="question-full-title">{question.title}</span>}
+                             
+                                
                                 <span id="question-full-user">{"User"}</span>
                                 <span>{new Date(question.time_posted.toDate()).toLocaleString()}</span>
                             </header>
@@ -163,10 +178,10 @@ export default function QuestionFullPage(props) {
                                 <pre>
                                 { (question.createdByUserID === Authenticate.user.uid) ?
                                  <ContentEditable
-                                 innerRef={editableRef}
+                                 innerRef={editableBodyRef}
                                  html={questionEditBody} // innerHTML of the editable div
                                  disabled={false} // use true to disable edition
-                                 onChange={handleQuestionEdit} // handle innerHTML change
+                                 onChange={(e) => setQuestionEditBody(e.target.value)} // handle innerHTML change
                                />
                                 :
                                 question.questionBody}
@@ -225,21 +240,23 @@ export default function QuestionFullPage(props) {
                 {/* Loop through each comments */}
                 <div>
                     {
-                        question.comments.map((com, index) => {
+                        question.comments.map((comment, index) => {
                             return (
                                 <div key={index}>
-                                    <Card>
+                                    <Card id="comment-full-page-card">
                                         <CardContent>
+                                  
                                             <header>
-
+                                                
                                             </header>
                                             <main>
-                                                {com.body}
+                                                {comment.body}
                                             </main>
 
                                             <section>
                                                 
                                             </section>
+                               
                                         </CardContent>
                                     </Card>    
                                 </div>
