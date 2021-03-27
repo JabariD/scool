@@ -239,15 +239,11 @@ export default function Question(props) {
                     </section>
 
                     <section>
-                   
                      
-                        <CheckUpVoteDownVoteState />
-                    
-
+                      <CheckUpVoteDownVoteState />
                       <span id="question-fa-comment" onClick={() => history.push(`/${props.id}/${questionObject.id}`)}><i className="far fa-comment"></i></span><span style={fontIconStyle}>{Object.keys(questionObject.data.comments).length}</span>
 
                     </section>
-
                     <footer><Link to={`/${props.id}/${questionObject.id}`}>See More.</Link></footer>
                </CardContent>
            </Card>

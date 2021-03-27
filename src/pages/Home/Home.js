@@ -47,11 +47,10 @@ export default function Home( props ) {
         // get collection ID
         const user = await DB.getUser(Authenticate.user.uid);
         const questionsID = user.questionID; // collectionID of questions user is subscribed to.
-        setQuestionCollectionID(questionsID);
 
         // if questionID is none allow user to choose subscribe list
         if (questionsID === "none") setSubscribeToQuestionsList(true);
-        else await syncQuestion();
+        else await displayQuestion(questionsID);
 
         
 
@@ -68,7 +67,9 @@ export default function Home( props ) {
         window.location.reload();
     }
 
-    const syncQuestion = async() => {
+    const displayQuestion = async(questionCollectionID) => {
+        setQuestionCollectionID(questionCollectionID)
+     
         // query questions
         const questionsExist = await DB.queryQuestions(questionCollectionID);
         let questionArray = [];
@@ -86,12 +87,12 @@ export default function Home( props ) {
             <Header pageName="Home" />
 
             <SearchBar questions={questions} questionCollectionID={questionCollectionID}/> 
-            {
+            {/* {
                 (!subscribeToQuestionList) ?
-                    <div id="home-icon-page" title="Get latest" onClick={syncQuestion}><i class="fas fa-sync"></i></div>
+                    <div id="home-icon-page" title="Get latest" onClick={syncQuestion}><i className="fas fa-sync"></i></div>
                 :
                     <></>
-            }
+            } */}
 
             <main className="questions">
                 { (!subscribeToQuestionList) ? 

@@ -18,6 +18,7 @@ import Notifications from './pages/Notifications/Notifications';
 import Messaging from './pages/Messaging/Messaging';
 import QuestionFullPage from './components/QuestionFullPage/QuestionFullPage';
 import Profile from './pages/Profile/Profile';
+import MessagingConversation from './pages/Messaging/MessagingConversation';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/:collectionID/:questionID" component={QuestionFullPage} exact/>
           <Route path="/notifications" component={Notifications} exact/>
           <Route path="/messaging" component={Messaging} exact/>
+          <Route path="/messaging/:userID/:receiverID" component={MessagingConversation} exact/>
           <Route path="*" component={FourZeroFour} />
         </Switch>
       </Router>

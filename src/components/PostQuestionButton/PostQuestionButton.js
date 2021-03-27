@@ -5,9 +5,7 @@ import Firestore from '../../firebase/firestore/Firestore.js';
 import Authenticate from '../../firebase/auth/Authenticate.js';
 
 import './PostQuestionButton.css';
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, Modal, makeStyles } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -90,7 +88,7 @@ export default function PostQuestionButton(props) {
             <span id="post-question-icon" className="grow" onClick={() => setOpen(true)}><i className="fas fa-plus-circle"></i></span>
             <Modal
                 open={open}
-                onClose={handleClose}
+                onClose={() => setOpen(false)}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
