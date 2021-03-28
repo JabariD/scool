@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-import Firestore from '../../firebase/firestore/Firestore.js'
+import Authenticate from '../../firebase/auth/Authenticate.js';
+import Firestore from '../../firebase/firestore/Firestore.js';
 
 export default function MessagingSearchBar( props ) {
     const DB = new Firestore();
@@ -20,7 +21,8 @@ export default function MessagingSearchBar( props ) {
         const usersInCollection = await DB.getUsers();
         let usersArray = [];
         usersInCollection.forEach((user) => {
-            usersArray.push({id: user.id, data: user.data()})
+            if (user.id !== Authenticate.user.uid)
+                usersArray.push({id: user.id, data: user.data()})
         });
         setUsers(usersArray);
         setValueSelected(null);

@@ -45,7 +45,12 @@ export default function Messaging(props) {
     const [open, setOpen] = useState(false);
 
     useEffect( async() => {
-        await Auth.IsLoggedIn();
+        // Confirm user is logged in
+        const result = await Auth.IsLoggedIn();
+        if (!result) {
+            history.push("/");
+            return;
+        }
 
         // get user DM's from firestore
         const user = await DB.getUser(Authenticate.user.uid);
@@ -113,7 +118,7 @@ export default function Messaging(props) {
                 <MessagingSearchBar getSelectedUser={getSelectedUser}/>
             </div>
 
-            <main>
+            <main id="messaging-conversations-main">
                 {/* Display list of conversations */}
                 {
                     messages.map((message, index) => (

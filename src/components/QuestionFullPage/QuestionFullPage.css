@@ -28,7 +28,13 @@
 
 /* Question Whole Components */
 .question-full-page-card {
-    margin-bottom: 25px;
+    margin-left: 1.4em;
+    margin-right: 1.4em;
+    margin-bottom: 2em;
+}
+
+.question-full-page-card-card {
+    border-radius: 21px;
 }
 
 /* Question Header */
@@ -77,4 +83,11 @@
 /* Comment */
 #comment-full-page-card {
     background-color: #FAFCFF;
+    margin: 1.4em;
+    border-radius: 21px;
+}
+
+#comment-full-page-card-header {
+    margin-bottom: 1.3em;
+    color: rgb(179, 179, 179);
 }

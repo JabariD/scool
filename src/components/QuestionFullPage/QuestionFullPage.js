@@ -24,6 +24,7 @@ export default function QuestionFullPage(props) {
 
     const [displayCommentBox, setDisplayCommentBox] = useState(false);
     const [comment, setComment] = useState("");
+    const [commentOwners, setCommentOwners] = useState([]);
 
     const [questionEditBody, setQuestionEditBody] = useState("");
     const [questionEditTitle, setQuestionEditTitle] = useState("");
@@ -45,6 +46,14 @@ export default function QuestionFullPage(props) {
         setQuestionEditTitle(question.title);
         setQuestionEditBody(question.questionBody);
         console.log(question);
+        // get each user that submitted a question and read it
+        let usersWhoCreatedComments = [];
+        for (var i = 0; i < question.comments.length; i++) {
+            const userWhoCreatedComment = question.comments[i].createdByUserID;
+            const userWhoCreated = await DB.getUser(userWhoCreatedComment);
+            usersWhoCreatedComments.push(userWhoCreated.email);
+        }
+        setCommentOwners(usersWhoCreatedComments);
 
     }, []);
 
@@ -149,7 +158,7 @@ export default function QuestionFullPage(props) {
                 </header>
 
                 <div className="question-full-page-card">
-                    <Card>
+                    <Card id="question-full-page-card-card">
                         <CardContent>
                             {
                                 (question.createdByUserID === Authenticate.user.uid) ?
@@ -245,17 +254,23 @@ export default function QuestionFullPage(props) {
                                 <div key={index}>
                                     <Card id="comment-full-page-card">
                                         <CardContent>
-                                  
-                                            <header>
-                                                
-                                            </header>
-                                            <main>
-                                                {comment.body}
-                                            </main>
+                                            <div>
+                                        
+                                            </div>
 
-                                            <section>
-                                                
-                                            </section>
+                                            <div>
+                                                <header id="comment-full-page-card-header">
+                                                    {commentOwners[index]}
+                                                </header>
+                                                <main>
+                                                    {comment.body}
+                                                </main>
+    
+                                                <section>
+                                                    
+                                                </section>
+
+                                            </div>
                                
                                         </CardContent>
                                     </Card>    

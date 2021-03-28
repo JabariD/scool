@@ -187,6 +187,7 @@ class Firestore {
 
     async putMessageInConversation(myID, message, receiverID) {
         // put message in both users
+        const lastUpdated = new Date();
 
         // me first
         const me = await this.getUser(myID)
@@ -196,6 +197,7 @@ class Firestore {
             if (myDirectMessages[i].user === receiverID) {
                 // place in messages
                 myDirectMessages[i].messages.push(message);
+                theirDirectMessages[i].lastUpdated = lastUpdated;
                 break;
             }
         }
@@ -208,6 +210,7 @@ class Firestore {
             if (theirDirectMessages[i].user === myID) {
                 // place in messages
                 theirDirectMessages[i].messages.push(message);
+                theirDirectMessages[i].lastUpdated = lastUpdated;
                 break;
             }
         }

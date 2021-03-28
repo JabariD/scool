@@ -84,10 +84,6 @@ export default function MessagingConversation(props) {
             owner: Authenticate.user.uid,
         }
 
-        // handle client case
-        // const tempConversationMessages = conversation.messages;
-        // tempConversationMessages.push(userMessage);
-
         // send to both users in Firebase.
         await DB.putMessageInConversation(Authenticate.user.uid, userMessage, conversation.user);
         setMessage("");
@@ -108,6 +104,10 @@ export default function MessagingConversation(props) {
     
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    const enterPress = async(e) => {
+        if (e.keyCode === 13) await handleSubmitMessage();
     }
 
     return (
@@ -137,7 +137,7 @@ export default function MessagingConversation(props) {
                     </main>
 
                     <footer id="messaging-conversation-footer">
-                        <TextField style={{display: "inline"}} variant="outlined" placeholder="Type message..." value={message} onChange={(e) => setMessage(e.target.value)} />
+                        <TextField style={{display: "inline"}} onKeyDown={(e) => enterPress(e)} variant="outlined" placeholder="Type message..." value={message} onChange={(e) => setMessage(e.target.value)} />
                         <Button variant="contained" color="primary" onClick={handleSubmitMessage}>Enter</Button>
                     </footer>
                     
