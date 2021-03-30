@@ -12,7 +12,7 @@ class Firestore {
                 directMessages: [],
                 major: "",
                 minor: "",
-                questionsAsked: "",
+                questionsAsked: [],
                 graduating: null,
                 notifications: [],
                 questionID: "none",
@@ -58,6 +58,15 @@ class Firestore {
     
         } catch(e) {
             console.log(e);
+        }
+    }
+
+    async queryColleges() {
+        try {
+            const collegesRef = firestore.collection("college");
+            return await collegesRef.get();
+        } catch(e) {
+            console.error(e);
         }
     }
 

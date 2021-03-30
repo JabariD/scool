@@ -17,7 +17,8 @@ import Question from '../../components/Question/Question.js';
 import PostQuestionButton from '../../components/PostQuestionButton/PostQuestionButton.js';
 
 // MaterialUI
-import { Select, MenuItem, Button } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Select, MenuItem, Button, TextField } from '@material-ui/core';
 
 // styles
 import './Home.css';
@@ -31,7 +32,10 @@ export default function Home( props ) {
     const [subscribeToQuestionList, setSubscribeToQuestionsList] = useState(false);
     const [questions, setQuestions] = useState([]);
     const [questionCollectionID, setQuestionCollectionID] = useState("");
-    const [collegeSelected, setCollegeSelected] = useState("");
+    const [collegeSelected, setCollegeSelected] = useState(null);
+
+    // if user has not selected college
+    const [collegesList, setCollegesList] = useState([]);
 
     // confirm user is logged in
     // get questions for user OR show questions list user can subscribe to
@@ -49,21 +53,37 @@ export default function Home( props ) {
         const questionsID = user.questionID; // collectionID of questions user is subscribed to.
 
         // if questionID is none allow user to choose subscribe list
-        if (questionsID === "none") setSubscribeToQuestionsList(true);
+        if (questionsID === "none") await setUserLocalFeed();
         else await displayQuestion(questionsID);
 
         
 
       }, []);
 
+      // user needs to select a local college
+      const setUserLocalFeed = async() => {
+        const colleges = await DB.queryColleges();
+        let tempArray = [];
+        colleges.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            const college = doc.data();
+
+            tempArray.push(college);
+        });
+        
+        setCollegesList(tempArray);
+
+        setSubscribeToQuestionsList(true);
+      }
+
       // if user clicks submit, we set the user university for that user
     const setUserUniversity = async() => {
-        if (collegeSelected === "") return;
-        else await DB.updateUser(Authenticate.user.uid, {questionID: collegeSelected});
+        if (collegeSelected === null) return;
+        else await DB.updateUser(Authenticate.user.uid, {questionID: collegeSelected.questionID});
 
         // set it to false
         setSubscribeToQuestionsList(false);
-        setCollegeSelected("");
+        setCollegeSelected(null);
         window.location.reload();
     }
 
@@ -102,18 +122,18 @@ export default function Home( props ) {
                     : 
                     <div>
                         {/* Will be made into an AutoComplete for better navigation of colleges */}
-                        <h3>Choose a university to see questions...</h3>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={collegeSelected}
-                            onChange={(e) => setCollegeSelected(e.target.value)}
-                            >
-                            <MenuItem value={"huBison1867"}>Howard University</MenuItem>
-                            <MenuItem value={"wellesley"}>Wellesley University</MenuItem>
-                        </Select>
-                        <Button onClick={setUserUniversity}>Submit</Button>
-                        <p>This can be changed later.</p>
+                        <h3>Choose a university to see questions</h3>
+                        <Autocomplete
+                            id="set-university-text-field"
+                            options={collegesList}
+                            getOptionLabel={(college) => college.title}
+                            onChange={(e, value) => setCollegeSelected(value)} // prints the selected value
+                            style={{ width: 300 }}
+                            renderInput={(params) => <TextField {...params} label="Set university to..." variant="outlined" />}
+                        />
+
+                        <Button id="set-university-button-submit" onClick={setUserUniversity}>Submit</Button>
+                        <p style={{textAlign: 'center', color: 'grey'}}>This can be changed later.</p>
                     </div>
                 
                 }
@@ -132,3 +152,8 @@ export default function Home( props ) {
         </div>
     )
 }
+
+const top100Films = [
+    { title: 'The Shawshank Redemption', year: 1994 },
+    { title: 'The Godfather', year: 1972 },
+];

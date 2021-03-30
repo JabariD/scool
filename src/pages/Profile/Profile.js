@@ -6,18 +6,27 @@ import Firestore from '../../firebase/firestore/Firestore';
 import Authenticate from '../../firebase/auth/Authenticate'
 
 // React Router
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 // Material UI
 import { Card, CardContent, TextField, Button } from '@material-ui/core'
 
 export default function Profile( props ) {
+    const history = useHistory();
     const DB = new Firestore();
+    const Auth = new Authenticate();
 
     const [user, setUser] = useState({});
     const [major, setMajor] = useState("");
 
     useEffect( async() => {
+        // Confirm user is logged in
+        const result = await Auth.IsLoggedIn();
+        if (!result) {
+            history.push("/");
+            return;
+        }
+
         const user = await DB.getUser(props.match.params.userID);
         setUser(user);
         setMajor(user.major);
@@ -83,6 +92,7 @@ export default function Profile( props ) {
 
             <footer>
                 {/* return button */}
+                <Link to="/home">Go home</Link>
             </footer>
         </div>
     )

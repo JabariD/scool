@@ -12,7 +12,7 @@ import ContentEditable from "react-contenteditable";
 import "./QuestionFullPage.css";
 
 // Material UI
-import { Card, CardContent, TextField, Button } from '@material-ui/core'
+import { Card, CardContent, TextField, Button, Modal } from '@material-ui/core'
 
 
 export default function QuestionFullPage(props) {
@@ -130,8 +130,28 @@ export default function QuestionFullPage(props) {
             setDisplayCommentBox(false);
 
             await DB.updateSpecificQuestion({data: tempQuestion, id: props.match.params.questionID}, props.match.params.collectionID);
+            window.location.reload();
+            return;
         }
       }
+
+      const commentBody = (
+        <div id="question-full-reply-to-post">
+            <header>
+                <div>
+                    <Button id="cancel-button" onClick={() => setDisplayCommentBox(false)}>Cancel</Button>
+                </div>
+
+                <div>
+                    <Button id="post-button" onClick={handleSubmitComment}>Post</Button>
+                </div>
+            </header>
+            <main>
+                <TextField id="reply-comment-body" InputProps={{ disableUnderline: true, multiline: true }} value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Reply to this thread..."></TextField>
+            </main>
+        </div>
+      );
+
 
     const handleOnSave = async() => {
         const tempQuestion = {...question};
@@ -141,7 +161,7 @@ export default function QuestionFullPage(props) {
     }
 
     const handleDelete = async() => {
-        if (window.confirm("Confirm deletion of EVERYTHING that pertains to this question (question, comments, upvotes)? NOTE: This action cannot be undone!")) {
+        if (window.confirm("Confirm deletion of Question? \nNOTE: This action cannot be undone!")) {
             await DB.deleteSpecificQuestion({id: props.match.params.questionID}, props.match.params.collectionID);
             history.goBack();
         }
@@ -233,6 +253,17 @@ export default function QuestionFullPage(props) {
                 </div>
 
                 {
+                    <Modal
+                    open={displayCommentBox}
+                    onClose={() => setDisplayCommentBox(false)}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                  >
+                    {commentBody}
+                  </Modal>
+                }
+
+                {/* {
                     (displayCommentBox) ? 
                     <Card>
                         <CardContent>
@@ -244,7 +275,7 @@ export default function QuestionFullPage(props) {
                     :
                     <></>
 
-                }
+                } */}
 
                 {/* Loop through each comments */}
                 <div>
