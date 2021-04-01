@@ -13,6 +13,8 @@ export default function SearchBar(props) {
     const [valueselected, setValueSelected] = useState(null);
     const [inputValue, setInputValue] = useState('');
 
+    console.log(props.questions)
+
     return (
         <div>
             {console.log(valueselected) /* <------- here's where the data resides*/}
@@ -27,13 +29,32 @@ export default function SearchBar(props) {
                 onInputChange={(event, newInputValue) => {
                     setInputValue(newInputValue);
                 }}
-                id="combo-box-demo"
                 options={props.questions}
                 getOptionLabel={(option) => option.data.title}
-                style={{ width:"300px", marginLeft: "auto", marginRight: "auto", backgroundColor: "white"}}
+                style={searchBarStyle}
                 freeSolo
-                renderInput={(params) => <TextField {...params} label="Search" variant="outlined" placeholder="Enter search term..." />}
+                // renderOption={(props, option) => {
+                //     console.log(props);
+                //     console.log(option);
+                //     const { title, color } = option;
+                //     return (
+                //       <div {...props} style={{ backgroundColor: "blue" }}>
+                //         {props.data.title}
+                //       </div>
+                //     );
+                //   }}
+                renderInput={(params) => <TextField {...params}  InputProps={{...params.InputProps, disableUnderline: true}} placeholder="Search feed" />}
             />
         </div>
     )
+}
+
+const searchBarStyle = {
+    width: "300px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "white",
+    borderRadius: "18px",
+    paddingTop: "7px",
+    paddingLeft: "20px"
 }

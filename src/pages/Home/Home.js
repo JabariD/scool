@@ -120,7 +120,7 @@ export default function Home( props ) {
                         return <Question key={index} question={question} id={questionCollectionID} /> 
                     })
                     : 
-                    <div>
+                    <div style={{textAlign: 'center'}}>
                         {/* Will be made into an AutoComplete for better navigation of colleges */}
                         <h3>Choose a university to see questions</h3>
                         <Autocomplete
@@ -128,7 +128,7 @@ export default function Home( props ) {
                             options={collegesList}
                             getOptionLabel={(college) => college.title}
                             onChange={(e, value) => setCollegeSelected(value)} // prints the selected value
-                            style={{ width: 300 }}
+                            style={{ width: 300, marginLeft: 'auto', marginRight: 'auto', }}
                             renderInput={(params) => <TextField {...params} label="Set university to..." variant="outlined" />}
                         />
 
@@ -152,8 +152,3 @@ export default function Home( props ) {
         </div>
     )
 }
-
-const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-];

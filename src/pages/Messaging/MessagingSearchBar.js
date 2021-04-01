@@ -50,10 +50,20 @@ export default function MessagingSearchBar( props ) {
                 id="combo-box-demo"
                 options={users}
                 getOptionLabel={(user) => user.data.email}
-                style={{ width:"300px", marginLeft: "auto", marginRight: "auto", backgroundColor: "white"}}
+                style={searchBarStyle}
                 freeSolo
-                renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Search people and groups..." />}
+                renderInput={(params) => <TextField {...params}  InputProps={{...params.InputProps, disableUnderline: true}} placeholder="Search people and groups..." />}
             />
         </div>
     )
+}
+
+const searchBarStyle = {
+    width: "300px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "white",
+    borderRadius: "18px",
+    paddingTop: "7px",
+    paddingLeft: "20px"
 }

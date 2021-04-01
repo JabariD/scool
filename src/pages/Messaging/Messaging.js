@@ -72,6 +72,7 @@ export default function Messaging(props) {
 
         }
 
+        console.log(user.directMessages)
         setMessages(user.directMessages);
 
     }, []);
@@ -88,7 +89,7 @@ export default function Messaging(props) {
         // make conversation component in firestore
         await DB.createConversation(Authenticate.user.uid, userToDM.id);
         setOpen(false);
-        history.reload();
+        window.location.reload();
     }
 
     const handleCancelConversation = () => {
@@ -120,7 +121,7 @@ export default function Messaging(props) {
 
             <main id="messaging-conversations-main">
                 {/* Display list of conversations */}
-                {
+                { 
                     messages.map((message, index) => (
                         <div key={index} onClick={() => history.push(`/messaging/${Authenticate.user.uid}/${message.user}`)}>
                             <Card>

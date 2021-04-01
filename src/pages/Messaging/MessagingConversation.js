@@ -93,13 +93,13 @@ export default function MessagingConversation(props) {
     const UserMessage = (props) => 
         <div className="userMessage">
             <p>{props.message.text}</p>
-            <p>{props.message.createdAt.toDate().toString()}</p>
+            <p>{props.message.createdAt.toDate().toLocaleString()}</p>
         </div>
     
     const ReceiverMessage = (props) => 
         <div className="receiverMessage">
             <p>{props.message.text}</p>
-            <p>{props.message.createdAt.toDate().toString()}</p>
+            <p>{props.message.createdAt.toDate().toLocaleString()}</p>
         </div>
     
     const scrollToBottom = () => {
