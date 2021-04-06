@@ -8,6 +8,8 @@ import Authenticate from '../../firebase/auth/Authenticate'
 // React Router
 import { Link, useHistory } from 'react-router-dom';
 
+// css
+import './Profile.css';
 // Material UI
 import { Card, CardContent, TextField, Button } from '@material-ui/core'
 
@@ -16,8 +18,15 @@ export default function Profile( props ) {
     const DB = new Firestore();
     const Auth = new Authenticate();
 
+    // state values
     const [user, setUser] = useState({});
+    const [showTextField, setShowTextField] = useState(false);
+    const [contentHot, setContentHot] = useState(false); // content must be saved... let the user know!
     const [major, setMajor] = useState("");
+
+    // const input state
+    const [contentEditing, setContentEditing] = useState("");
+    const [content, setContent] = useState('');
 
     useEffect( async() => {
         // Confirm user is logged in
@@ -33,31 +42,61 @@ export default function Profile( props ) {
         console.log(user)
     }, []);
 
-    const handleSubmit = () => {
+    const handleEdit = (content) => {
+        setContentEditing(content);
+        setShowTextField(true);
+    }
 
+    const handleSubmit = async() => {
+
+        let userCopy = Object.assign({}, user); 
+        if (contentEditing === "major")
+            userCopy.major = content;  
+        
+        setUser(userCopy);
+        await DB.updateUser(Authenticate.user.uid, userCopy);
+        setContent("");
+        setContentEditing("");
+        setShowTextField(false);
     }
 
     return (
         <div>
             <Header pageName="Profile"/>
-
             {
-                (props.match.params.userID === Authenticate.user.uid) 
+                (Authenticate.user && props.match.params.userID === Authenticate.user.uid) 
                 ?
-                <main>
+                <main id="main-profile">
                     <Card>
                         <CardContent>
                             <header>
-                                <span>{user.email}</span>
+                                <h2>{user.email} (Me)</h2>
                             </header>
 
-                            <main>
-                                <TextField label="Major" value={major} onChange={(e) => setMajor(e.target.value)}></TextField>
-                                <TextField label="Graduation Date" type="date" InputLabelProps={{shrink: true}}></TextField>
+                            <main id="profile-cards">
+                                <section>
+                                    <h3>Major</h3>
+                                    {
+                                        (user.major !== "") ?
+                                        <h5 style={{color: "orange"}}>{user.major}</h5>
+                                        :
+                                        <span>No major to display.</span>
+                                    }
+                                    <span onClick={() => handleEdit("major")}><i className="fas fa-pen-square"></i></span>
+                                </section>
                             </main>
 
                             <footer>
-                                <Button onClick={handleSubmit}>Save changes</Button>
+                                {
+                                    (showTextField) ?
+                                    <>
+                                    <h5>Editing {contentEditing}</h5>
+                                    <TextField value={content} onChange={(e) => setContent(e.target.value)}></TextField><br></br>
+                                    </>
+                                    :
+                                    <></>
+                                }
+                                <Button variant="contained" style={{marginTop: '1em'}} onClick={handleSubmit}>Save changes</Button>
                             </footer>
 
                             <section>
@@ -74,9 +113,17 @@ export default function Profile( props ) {
                                 <span>{user.email}</span>
                             </header>
 
-                            <main>
-                                <span>{user.major}</span>
-                                <span>{user.graduating}</span>
+                            <main id="profile-cards">
+                                <section>
+                                    <h3>Major</h3>
+                                    {
+                                        (user.major !== "") ?
+                                        <h5 style={{color: "orange"}}>{user.major}</h5>
+                                        :
+                                        <span>No major to display.</span>
+                                    }
+                                </section>
+
                             </main>
 
                             <section>

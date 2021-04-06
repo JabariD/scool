@@ -22,6 +22,7 @@ export default function QuestionFullPage(props) {
 
     const [question, setQuestion] = useState(null);
 
+    const [ownerOfQuestion, setOwnerOfQuestion] = useState("");
     const [displayCommentBox, setDisplayCommentBox] = useState(false);
     const [comment, setComment] = useState("");
     const [commentOwners, setCommentOwners] = useState([]);
@@ -51,6 +52,7 @@ export default function QuestionFullPage(props) {
         for (var i = 0; i < question.comments.length; i++) {
             const userWhoCreatedComment = question.comments[i].createdByUserID;
             const userWhoCreated = await DB.getUser(userWhoCreatedComment);
+            setOwnerOfQuestion(userWhoCreated.email);
             usersWhoCreatedComments.push(userWhoCreated.email);
         }
         setCommentOwners(usersWhoCreatedComments);
@@ -199,7 +201,7 @@ export default function QuestionFullPage(props) {
                                 <span id="question-full-title">{question.title}</span>}
                              
                                 
-                                <span id="question-full-user">{"User"}</span>
+                                <span id="question-full-user">{ownerOfQuestion}</span>
                                 <span>{new Date(question.time_posted.toDate()).toLocaleString()}</span>
                             </header>
 
