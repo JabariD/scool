@@ -138,7 +138,7 @@ export default function MessagingConversation(props) {
 
                     <footer id="messaging-conversation-footer">
                         <TextField style={{display: "inline"}} onKeyDown={(e) => enterPress(e)} variant="outlined" placeholder="Type message..." value={message} onChange={(e) => setMessage(e.target.value)} />
-                        <Button variant="contained" color="primary" onClick={handleSubmitMessage}>Enter</Button>
+                        <Button variant="contained" style={{backgroundColor: "#2680FF", color: "white", marginLeft: "1em"}} onClick={handleSubmitMessage}>Enter</Button>
                     </footer>
                     
                 </div>

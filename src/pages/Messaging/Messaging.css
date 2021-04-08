@@ -1,3 +1,11 @@
 #messaging-conversations-main {
     margin: 2em;
 }
+
+#messaging-conversations-main #convo {
+    margin-bottom: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20em;
+    cursor: pointer;
+}

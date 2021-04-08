@@ -123,7 +123,7 @@ export default function Messaging(props) {
                 {/* Display list of conversations */}
                 { 
                     messages.map((message, index) => (
-                        <div key={index} onClick={() => history.push(`/messaging/${Authenticate.user.uid}/${message.user}`)}>
+                        <div key={index} id="convo" onClick={() => history.push(`/messaging/${Authenticate.user.uid}/${message.user}`)}>
                             <Card>
                                 <CardContent>
                                     <div>

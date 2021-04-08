@@ -227,8 +227,10 @@ export default function Question(props) {
                         <span>{(questionObject.data.questionBody.length < 110) ? 
                         questionObject.data.questionBody
                         :
-                        questionObject.data.questionBody.substr(0, 110) + "...Read more"
+                        questionObject.data.questionBody.substr(0, 110) + "..."
                         }
+                        <br></br>
+                        <Link id="read-more-link-style" to={`/${props.id}/${questionObject.id}`}>Read More</Link>
                         </span>
                     </p>
                     
@@ -239,12 +241,10 @@ export default function Question(props) {
                     </section>
 
                     <section>
-                     
                       <CheckUpVoteDownVoteState />
                       <span id="question-fa-comment" onClick={() => history.push(`/${props.id}/${questionObject.id}`)}><i className="far fa-comment"></i></span><span style={fontIconStyle}>{Object.keys(questionObject.data.comments).length}</span>
 
                     </section>
-                    <footer><Link to={`/${props.id}/${questionObject.id}`}>See More.</Link></footer>
                </CardContent>
            </Card>
            :
