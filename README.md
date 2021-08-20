@@ -2,6 +2,7 @@
 https://scool-8772f.firebaseapp.com/
 
 ## **What is Scool**
+Last Updated: 2/07/2021
 
 Scool is an Ed-tech application that aims to simplify the tutoring/academic support process. It is a web application platform (that ideally will have 2 domains: web and mobile) that allows students to…
 
