@@ -1,3 +1,6 @@
+# To run simply navigate to:
+https://scool-8772f.firebaseapp.com/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
