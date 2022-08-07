@@ -1,4 +1,7 @@
-# To run simply navigate to:
+# Demo
+https://youtu.be/h0Uh-mDtAvU
+
+# To run
 https://scool-8772f.firebaseapp.com/
 
 ## **What is Scool**
