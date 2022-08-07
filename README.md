@@ -5,7 +5,7 @@ https://youtu.be/h0Uh-mDtAvU
 https://scool-8772f.firebaseapp.com/
 
 ## **What is Scool**
-Last Updated: 2/07/2021
+Last Updated: August 6, 2022
 
 ![scool-logo](https://user-images.githubusercontent.com/52969350/130161093-6172a506-e10b-49ae-9d3f-56e1afea0892.png)
 
